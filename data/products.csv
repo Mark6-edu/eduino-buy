@@ -1,7 +1,8 @@
 category,code,name,price,url
-보드,EDU-001,Arduino Uno Rev3,35000,https://eduino.kr/products/arduino-uno-rev3
-보드,EDU-002,Arduino Mega 2560,55000,https://eduino.kr/products/arduino-mega
-보드,EDU-003,Arduino Nano,15000,https://eduino.kr/products/arduino-nano
+보드,A-1,아두이노 우노 R3 호환보드 SMD 타입,2900,https://eduino.kr/product/detail.html?product_no=59&cate_no=134&display_group=1
+보드,A-7,아두이노 나노 v3.0 328P 호환보드,2850,https://eduino.kr/product/detail.html?product_no=130&cate_no=134&display_group=1
+보드,B-10,아두이노 센서 확장 쉴드 V5.0,1800,https://eduino.kr/product/detail.html?product_no=115&cate_no=134&display_group=1
+보드,B-18,아두이노 나노 I/O 확장 프로토 쉴드,1800,https://eduino.kr/product/detail.html?product_no=174&cate_no=134&display_group=1
 센서,EDU-101,초음파 센서 (HC-SR04),8500,https://eduino.kr/products/hc-sr04
 센서,EDU-102,온습도 센서 (DHT22),12000,https://eduino.kr/products/dht22
 센서,EDU-103,가스 센서 (MQ-2),6500,https://eduino.kr/products/mq-2
