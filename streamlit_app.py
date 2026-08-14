@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from pathlib import Path
+import re
 from utils.calculator import format_currency
 
 # ============================================================================
@@ -649,6 +650,102 @@ def render_cart():
                 st.rerun()
 
 
+
+# ============================================================================
+# CSV 다운로드
+# ============================================================================
+
+
+def sanitize_filename(value):
+    """파일명에 사용할 수 없는 문자를 제거한다."""
+    text = str(value or "").strip()
+    text = re.sub(r'[\\/:*?"<>|]+', "_", text)
+    text = re.sub(r"\s+", "_", text)
+    return text or "미입력"
+
+
+def build_order_csv():
+    """
+    현재 장바구니를 CSV 다운로드용 DataFrame과 파일명으로 변환한다.
+
+    각 주문 행에 학생 정보를 반복 기록하여 CSV 한 파일만으로도
+    누가 어떤 부품을 주문했는지 확인할 수 있게 한다.
+    """
+    totals = calculate_cart_totals()
+
+    grade = st.session_state.get("select_grade", "")
+    class_name = st.session_state.get("select_class", "")
+    student_name = st.session_state.get("input_student_name", "").strip()
+
+    rows = []
+
+    for item in totals["selected_items"]:
+        rows.append(
+            {
+                "학년": grade,
+                "반": class_name,
+                "학생명/팀원명": student_name,
+                "상품코드": item["상품코드"],
+                "상품명": item["상품명"],
+                "옵션": item["옵션"],
+                "단가": item["단가"],
+                "수량": item["수량"],
+                "금액": item["금액"],
+                "총 구매 예상금액": totals["total_amount"],
+            }
+        )
+
+    df = pd.DataFrame(rows)
+
+    filename = (
+        f"Eduino_구매명세서_"
+        f"{sanitize_filename(grade)}_"
+        f"{sanitize_filename(class_name)}_"
+        f"{sanitize_filename(student_name)}.csv"
+    )
+
+    return df, filename
+
+
+def render_csv_download():
+    """장바구니 내용을 CSV 파일로 다운로드할 수 있게 한다."""
+    st.markdown("---")
+    st.subheader("⬇️ 구매 명세서 CSV 다운로드")
+
+    totals = calculate_cart_totals()
+
+    if totals["selected_count"] == 0:
+        st.info("담긴 상품이 있어야 CSV 파일을 다운로드할 수 있습니다.")
+        return
+
+    student_name = st.session_state.get("input_student_name", "").strip()
+
+    if not student_name:
+        st.warning(
+            "학생명 / 팀원명이 비어 있습니다. "
+            "다운로드는 가능하지만, 구분을 위해 이름을 입력하는 것을 권장합니다."
+        )
+
+    csv_df, filename = build_order_csv()
+
+    # Excel에서 한글이 깨지지 않도록 UTF-8 BOM 사용
+    csv_bytes = csv_df.to_csv(index=False).encode("utf-8-sig")
+
+    st.download_button(
+        label="📥 CSV 구매 명세서 다운로드",
+        data=csv_bytes,
+        file_name=filename,
+        mime="text/csv",
+        use_container_width=True,
+        type="primary",
+    )
+
+    st.caption(
+        "CSV에는 학년, 반, 학생명/팀원명, 상품코드, 상품명, 옵션, "
+        "단가, 수량, 금액, 총 구매 예상금액이 포함됩니다."
+    )
+
+
 # ============================================================================
 # 선택 상품 요약
 # ============================================================================
@@ -816,6 +913,7 @@ def main():
 
     render_cart()
     render_selected_summary()
+    render_csv_download()
 
 
 if __name__ == "__main__":
