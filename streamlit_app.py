@@ -1027,62 +1027,42 @@ def render_selected_summary():
     totals = calculate_cart_totals()
 
     st.markdown("---")
-    st.subheader("📋 선택 상품 요약")
+    st.subheader("📋 주문 요약")
 
     if totals["selected_count"] == 0:
-        st.info("✅ 담긴 상품이 없습니다.")
-    else:
-        selected_df = pd.DataFrame(totals["selected_items"])
+        st.info("아직 담은 상품이 없습니다.")
+        return
 
-        selected_df = selected_df[
-            ["상품코드", "상품명", "옵션", "단가", "수량", "금액"]
-        ]
+    selected_df = pd.DataFrame(totals["selected_items"])
+    selected_df = selected_df[
+        ["상품코드", "상품명", "옵션", "단가", "수량", "금액"]
+    ]
 
-        st.dataframe(
-            selected_df,
-            use_container_width=True,
-            hide_index=True,
-        )
-
-        st.markdown("---")
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-            st.metric(
-                "선택 주문 항목",
-                f"{totals['selected_count']}종",
-            )
-
-        with col2:
-            st.metric(
-                "전체 구매 수량",
-                f"{totals['total_quantity']}개",
-            )
-
-        with col3:
-            st.metric(
-                "총 구매 예상금액",
-                f"{format_currency(totals['total_amount'])}원",
-            )
+    st.dataframe(
+        selected_df,
+        use_container_width=True,
+        hide_index=True,
+    )
 
     st.markdown("---")
-    st.subheader("💰 총 구매 금액 요약")
+    col1, col2, col3 = st.columns(3)
 
-    if totals["selected_count"] == 0:
-        st.info("담긴 상품이 없으므로 총액을 계산할 수 없습니다.")
-    else:
-        st.markdown(
-            f"### 💵 총 구매 예상금액: "
-            f"**{format_currency(totals['total_amount'])}원**"
+    with col1:
+        st.metric(
+            "선택 품목",
+            f"{totals['selected_count']}종",
         )
 
-        st.markdown(
-            f"""
-            - 선택 주문 항목: **{totals['selected_count']}종**
-            - 전체 구매 수량: **{totals['total_quantity']}개**
-            - 총액: **{format_currency(totals['total_amount'])}원**
-            """
+    with col2:
+        st.metric(
+            "총 수량",
+            f"{totals['total_quantity']}개",
+        )
+
+    with col3:
+        st.metric(
+            "총 구매 예상금액",
+            f"{format_currency(totals['total_amount'])}원",
         )
 
 
