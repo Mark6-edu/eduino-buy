@@ -1,4 +1,7 @@
 .streamlit/secrets.toml
+serviceAccountKey.json
+firebase-key.json
+credentials.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
