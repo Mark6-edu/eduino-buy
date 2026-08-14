@@ -98,7 +98,7 @@ def render_sensor_category(products_df):
     if st.session_state['selected_sensor_category'] not in sensor_categories:
         st.session_state['selected_sensor_category'] = "환경"
 
-    current_category = st.session_state['selected_sensor_category']
+    selected_sensor_category = st.session_state['selected_sensor_category']
 
     st.subheader("📡 센서 & 모듈")
     st.caption("센서 유형을 선택하면 해당 분류의 상품을 확인할 수 있습니다.")
@@ -106,7 +106,7 @@ def render_sensor_category(products_df):
     cols = st.columns(6)
     for idx, category_name in enumerate(sensor_categories):
         with cols[idx % len(cols)]:
-            is_selected = current_category == category_name
+            is_selected = selected_sensor_category == category_name
             if st.button(
                 category_name,
                 key=f"sensor_category_{category_name}",
@@ -114,14 +114,13 @@ def render_sensor_category(products_df):
                 type="primary" if is_selected else "secondary",
             ):
                 st.session_state['selected_sensor_category'] = category_name
-                current_category = category_name
 
-    st.info(f"현재 선택: **{current_category}**")
+    st.info(f"현재 선택: **{selected_sensor_category}**")
 
     sensor_df = products_df[
         (products_df['category'] == '센서') &
         products_df.apply(
-            lambda row: current_category in normalize_subcategories(
+            lambda row: selected_sensor_category in normalize_subcategories(
                 row.get('subcategories', row.get('subcategory', ''))
             ),
             axis=1,
