@@ -26,8 +26,8 @@ def calculate_totals(products_df, selections, quantities):
     
     Args:
         products_df (pd.DataFrame): 상품 정보 데이터프레임
-        selections (dict): {row_index: bool} 상품별 선택 여부
-        quantities (dict): {row_index: int} 상품별 수량
+        selections (dict): {product_code: bool} 상품별 선택 여부
+        quantities (dict): {product_code: int} 상품별 수량
     
     Returns:
         dict: {
@@ -41,17 +41,18 @@ def calculate_totals(products_df, selections, quantities):
     total_quantity = 0
     selected_count = 0
     selected_items = []
-    
-    for idx, row in products_df.iterrows():
-        is_selected = selections.get(idx, False)
-        qty = quantities.get(idx, 0) if is_selected else 0
-        
+
+    for _, row in products_df.iterrows():
+        code = str(row['code']).strip()
+        is_selected = selections.get(code, False)
+        qty = quantities.get(code, 0) if is_selected else 0
+
         if is_selected:
             selected_count += 1
             total_quantity += qty
             amount = qty * row['price']
             total_amount += amount
-            
+
             selected_items.append({
                 '카테고리': row['category'],
                 '상품코드': row['code'],
@@ -60,7 +61,7 @@ def calculate_totals(products_df, selections, quantities):
                 '수량': qty,
                 '금액': int(amount)
             })
-    
+
     return {
         'total_amount': total_amount,
         'total_quantity': total_quantity,
