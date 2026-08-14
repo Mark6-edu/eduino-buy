@@ -114,6 +114,7 @@ def render_sensor_category(products_df):
                 type="primary" if is_selected else "secondary",
             ):
                 st.session_state['selected_sensor_category'] = category_name
+                st.rerun()
 
     st.info(f"현재 선택: **{selected_sensor_category}**")
 
