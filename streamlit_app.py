@@ -5,6 +5,7 @@ import re
 import io
 import csv
 from services.excel_service import create_order_excel
+from services.google_sheet_service import submit_order_to_sheet
 from utils.calculator import format_currency
 
 # ============================================================================
@@ -972,6 +973,51 @@ def render_excel_download():
     )
 
 
+def render_final_submit():
+    """Google Sheets 제출 섹션을 렌더링한다."""
+    st.markdown("---")
+    st.subheader("📤 최종 제출")
+    st.caption("현재 장바구니 내용을 학교 주문 시스템에 제출합니다.")
+
+    totals = calculate_cart_totals()
+
+    if totals["selected_count"] == 0:
+        st.warning("제출할 상품이 없습니다.")
+        return
+
+    student_name = st.session_state.get("input_student_name", "").strip()
+    if not student_name:
+        st.warning("학생명 / 팀원명을 입력해주세요.")
+        return
+
+    if st.button(
+        "📤 주문 내역 최종 제출",
+        use_container_width=True,
+        type="primary",
+        disabled=st.session_state.get("submit_in_progress", False),
+    ):
+        st.session_state["submit_in_progress"] = True
+        st.rerun()
+
+    if st.session_state.get("submit_in_progress", False):
+        with st.spinner("주문 내역을 제출하고 있습니다..."):
+            result = submit_order_to_sheet(
+                grade=st.session_state.get("select_grade", ""),
+                class_name=st.session_state.get("select_class", ""),
+                student_number=st.session_state.get("input_student_number", 1),
+                student_name=student_name,
+                selected_items=totals["selected_items"],
+                total_amount=totals["total_amount"],
+            )
+
+        if result.get("success"):
+            st.success("✅ 주문 내역이 정상적으로 제출되었습니다.")
+            st.session_state["submit_in_progress"] = False
+        else:
+            st.error(f"❌ 제출에 실패했습니다.\n{result.get('message', 'Google Sheets 제출 실패')}")
+            st.session_state["submit_in_progress"] = False
+
+
 # ============================================================================
 # 선택 상품 요약
 # ============================================================================
@@ -1151,6 +1197,7 @@ def main():
     render_selected_summary()
     render_csv_download()
     render_excel_download()
+    render_final_submit()
 
     # 현재 스크롤 위치와 관계없이 viewport 상단 중앙에 3초간 표시
     render_top_notification()
