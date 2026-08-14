@@ -353,8 +353,11 @@ def remove_from_cart(cart_key):
 
 
 def clear_all_cart():
-    """현재 장바구니와 연결된 widget state를 한 번에 제거한다."""
+    """현재 장바구니와 연결된 수량 widget state를 모두 제거하고 장바구니를 비운다."""
     cart = st.session_state.get("cart", {})
+
+    # 장바구니 수량 number_input의 widget state까지 함께 제거해야
+    # 전체 삭제 후 다시 담았을 때 수량이 1부터 정상 시작한다.
     for cart_key in list(cart.keys()):
         st.session_state.pop(f"cart_qty_{cart_key}", None)
 
@@ -685,7 +688,9 @@ def render_cart():
     st.markdown("---")
 
     cart_items = st.session_state.get("cart", {})
-    title_col, delete_col = st.columns([5, 1.4])
+
+    # 제목과 전체 삭제 버튼을 같은 줄에 배치한다.
+    title_col, delete_col = st.columns([4.6, 1.4], vertical_alignment="center")
 
     with title_col:
         st.subheader("🧺 담은 상품")
@@ -693,13 +698,14 @@ def render_cart():
     with delete_col:
         if cart_items:
             if st.button(
-                "🗑️ 전체 삭제",
-                key="clear_all_cart",
+                "🗑️ 담은 상품 전체 삭제",
+                key="clear_all_cart_button",
                 use_container_width=True,
-                type="secondary",
+                type="primary",
+                help="현재 장바구니에 담긴 모든 상품을 삭제합니다.",
             ):
                 clear_all_cart()
-                set_top_notification("🗑️ 담은 상품을 모두 삭제했습니다.")
+                set_top_notification("담은 상품을 모두 삭제했습니다.")
                 st.rerun()
 
     if not cart_items:
@@ -713,7 +719,6 @@ def render_cart():
         with column:
             st.caption(label)
 
-    # dict를 순회하면서 삭제가 발생할 수 있으므로 list로 복사
     for cart_key, item in list(st.session_state["cart"].items()):
         (
             col_code,
@@ -740,7 +745,6 @@ def render_cart():
         with col_qty:
             cart_qty_key = f"cart_qty_{cart_key}"
 
-            # 처음 렌더링되는 장바구니 항목만 cart의 수량으로 widget state 초기화
             if cart_qty_key not in st.session_state:
                 st.session_state[cart_qty_key] = max(
                     1,
@@ -755,7 +759,6 @@ def render_cart():
                 label_visibility="collapsed",
             )
 
-            # 사용자가 장바구니에서 직접 수량을 바꾸면 cart 데이터에도 즉시 반영
             st.session_state["cart"][cart_key]["quantity"] = int(quantity)
 
         with col_amount:
@@ -1024,10 +1027,12 @@ def render_final_submit():
 
 
 def render_selected_summary():
+    """장바구니 상품 목록과 핵심 금액 정보를 하나의 주문 요약 영역으로 표시한다."""
     totals = calculate_cart_totals()
 
     st.markdown("---")
     st.subheader("📋 주문 요약")
+    st.caption("담은 상품과 수량, 예상 구매금액을 한 번에 확인할 수 있습니다.")
 
     if totals["selected_count"] == 0:
         st.info("아직 담은 상품이 없습니다.")
@@ -1036,15 +1041,27 @@ def render_selected_summary():
     selected_df = pd.DataFrame(totals["selected_items"])
     selected_df = selected_df[
         ["상품코드", "상품명", "옵션", "단가", "수량", "금액"]
-    ]
+    ].copy()
+
+    # 화면 표시용 포맷만 적용하고 내부 계산 데이터는 숫자형을 유지한다.
+    selected_display_df = selected_df.copy()
+    selected_display_df["단가"] = selected_display_df["단가"].map(
+        lambda value: f"{format_currency(value)}원"
+    )
+    selected_display_df["수량"] = selected_display_df["수량"].map(
+        lambda value: f"{int(value)}개"
+    )
+    selected_display_df["금액"] = selected_display_df["금액"].map(
+        lambda value: f"{format_currency(value)}원"
+    )
 
     st.dataframe(
-        selected_df,
+        selected_display_df,
         use_container_width=True,
         hide_index=True,
     )
 
-    st.markdown("---")
+    # 별도의 '총 구매 금액 요약' 섹션 없이 같은 주문 요약 안에 통합한다.
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -1064,6 +1081,7 @@ def render_selected_summary():
             "총 구매 예상금액",
             f"{format_currency(totals['total_amount'])}원",
         )
+
 
 
 # ============================================================================
