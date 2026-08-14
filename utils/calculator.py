@@ -20,15 +20,16 @@ def calculate_product_amount(selected, quantity, price):
     return quantity * price
 
 
-def calculate_totals(products_df, selections, quantities):
+def calculate_totals(products_df, selections, quantities, product_options=None):
     """
     총 구매 정보를 계산한다.
-    
+
     Args:
         products_df (pd.DataFrame): 상품 정보 데이터프레임
         selections (dict): {product_code: bool} 상품별 선택 여부
         quantities (dict): {product_code: int} 상품별 수량
-    
+        product_options (dict): {product_code: selected_option} 또는 {product_code: {option_name: qty}}
+
     Returns:
         dict: {
             'total_amount': float (총 금액),
@@ -41,26 +42,70 @@ def calculate_totals(products_df, selections, quantities):
     total_quantity = 0
     selected_count = 0
     selected_items = []
+    product_options = product_options or {}
 
     for _, row in products_df.iterrows():
         code = str(row['code']).strip()
-        is_selected = selections.get(code, False)
-        qty = quantities.get(code, 0) if is_selected else 0
+        option_value = product_options.get(code)
 
-        if is_selected:
-            selected_count += 1
-            total_quantity += qty
-            amount = qty * row['price']
-            total_amount += amount
+        if isinstance(option_value, dict):
+            option_items = option_value.items()
+            has_selected_option = False
+            for option_name, qty in option_items:
+                qty = int(qty or 0)
+                if qty <= 0:
+                    continue
+                has_selected_option = True
+                selected_count += 1
+                total_quantity += qty
+                amount = qty * row['price']
+                total_amount += amount
 
-            selected_items.append({
-                '카테고리': row['category'],
-                '상품코드': row['code'],
-                '상품명': row['name'],
-                '단가': int(row['price']),
-                '수량': qty,
-                '금액': int(amount)
-            })
+                selected_items.append({
+                    '카테고리': row['category'],
+                    '상품코드': row['code'],
+                    '상품명': row['name'],
+                    '옵션': str(option_name),
+                    '단가': int(row['price']),
+                    '수량': qty,
+                    '금액': int(amount)
+                })
+            if has_selected_option:
+                continue
+
+        is_selected = bool(selections.get(code, False))
+        selected_option = None
+
+        if isinstance(option_value, str):
+            selected_option = option_value.strip()
+            if is_selected:
+                selected_option = selected_option or None
+            else:
+                selected_option = None
+
+        if not is_selected:
+            continue
+
+        qty = int(quantities.get(code, 0) or 0)
+        if qty <= 0 and selected_option is not None:
+            qty = 1
+        if qty <= 0:
+            continue
+
+        selected_count += 1
+        total_quantity += qty
+        amount = qty * row['price']
+        total_amount += amount
+
+        selected_items.append({
+            '카테고리': row['category'],
+            '상품코드': row['code'],
+            '상품명': row['name'],
+            '옵션': selected_option if selected_option else '-',
+            '단가': int(row['price']),
+            '수량': qty,
+            '금액': int(amount)
+        })
 
     return {
         'total_amount': total_amount,

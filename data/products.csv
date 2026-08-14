@@ -1,47 +1,64 @@
-category,subcategories,code,name,price,url
-보드,,A-1,아두이노 우노 R3 호환보드 SMD 타입,2900,https://eduino.kr/product/detail.html?product_no=59&cate_no=134&display_group=1
-보드,,A-7,아두이노 나노 v3.0 328P 호환보드,2850,https://eduino.kr/product/detail.html?product_no=130&cate_no=134&display_group=1
-보드,,B-10,아두이노 센서 확장 쉴드 V5.0,1800,https://eduino.kr/product/detail.html?product_no=115&cate_no=134&display_group=1
-보드,,B-18,아두이노 나노 I/O 확장 프로토 쉴드,1800,https://eduino.kr/product/detail.html?product_no=174&cate_no=134&display_group=1
-센서,환경|수질/토양,C-5,아두이노 토양 수분감지 센서 모듈,1100,https://eduino.kr/product/detail.html?product_no=84&cate_no=34&display_group=1
-센서,환경|수질/토양,C-6,아두이노 빗물감지 수위 측정 센서 모듈,440,https://eduino.kr/product/detail.html?product_no=106&cate_no=34&display_group=1
-센서,환경,C-73,아두이노 온도 습도 온습도 모듈(케이블 포함) DHT-11,1500,https://eduino.kr/product/detail.html?product_no=91&cate_no=34&display_group=1
-센서,환경,C-49,아두이노 미세먼지 측정 센서 PM2.5 GP2Y1014AU,8800,https://eduino.kr/product/detail.html?product_no=433&cate_no=34&display_group=1
-센서,거리/위치,C-21,아두이노 초음파센서 HC-SR04,1100,https://eduino.kr/product/detail.html?product_no=39&cate_no=54&display_group=1
-센서,거리/위치|조도/적외선/컬러,C-23,장애물 감지 아두이노 적외선(IR) 송수신 센서 모듈,880,https://eduino.kr/product/detail.html?product_no=87&cate_no=54&display_group=1
-센서,거리/위치,C-26,아두이노 적외선 거리측정센서 10~80cm 2Y0A21,9500,https://eduino.kr/product/detail.html?product_no=235&cate_no=54&display_group=1
-센서,거리/위치,C-30,적외선 고정밀 ToF 거리센서 VL53L0X V2,5500,https://eduino.kr/product/detail.html?product_no=1117&cate_no=54&display_group=1
-센서,압력/접촉,C-83,아두이노 정전식 터치센서 TTP223B,660,https://eduino.kr/product/detail.html?product_no=370&cate_no=996&display_group=1
-센서,압력/접촉,C-84,아두이노 16키 디지털 터치 센서 TTP229 모듈,2500,https://eduino.kr/product/detail.html?product_no=303&cate_no=996&display_group=1
-센서,압력/접촉,C-62,아두이노 충격센서 / 진동센서 모듈 SW-18010P,1100,https://eduino.kr/product/detail.html?product_no=289&cate_no=996&display_group=1
-센서,압력/접촉,C-18,아두이노 멤브레인 1x4 키패드 센서,1100,https://eduino.kr/product/detail.html?product_no=1376&cate_no=1092&display_group=1
-센서,조도/적외선/컬러,C-54,아두이노 광 포토셀 CdS 조도센서 모듈,770,https://eduino.kr/product/detail.html?product_no=234&cate_no=992&display_group=1
-센서,조도/적외선/컬러,C-52,아두이노 적외선 PIR 센서 인체감지 모션센서 HC-SR501,1200,https://eduino.kr/product/detail.html?product_no=104&cate_no=992&display_group=1
-센서,조도/적외선/컬러,D-47,아두이노 적외선 레이저 모듈 5V,770,https://eduino.kr/product/detail.html?product_no=68&cate_no=992&display_group=1
-센서,조도/적외선/컬러,C-66,아두이노 RGB 컬러 센서 TCS34725 모듈,5500,https://eduino.kr/product/detail.html?product_no=390&cate_no=992&display_group=1
-센서,LCD/디스플레이,D-23,아두이노 LCD 16x2 4핀 I2C 디스플레이,3400,https://eduino.kr/product/detail.html?product_no=105&cate_no=1004&display_group=1
-센서,LCD/디스플레이,D-26,아두이노 LCD 20x4 4핀 I2C 디스플레이,6600,https://eduino.kr/product/detail.html?product_no=133&cate_no=1004&display_group=1
-센서,LCD/디스플레이,D-28,아두이노 128x64 OLED 0.96인치 I2C 디스플레이,4800,https://eduino.kr/product/detail.html?product_no=58&cate_no=1004&display_group=1
-센서,LCD/디스플레이,D-69,아두이노 1.8인치 128x160 TFT LCD 모듈,9900,https://eduino.kr/product/detail.html?product_no=316&cate_no=1004&display_group=1
-센서,릴레이/스위치,D-41,아두이노 1채널 5V 릴레이 모듈,990,https://eduino.kr/product/detail.html?product_no=56&cate_no=1019&display_group=1
-센서,릴레이/스위치,D-50,아두이노 조이스틱 모듈,990,https://eduino.kr/product/detail.html?product_no=78&cate_no=1092&display_group=1
-센서,릴레이/스위치,D-104,택트 스위치 버튼 모듈 KY-004,770,https://eduino.kr/product/detail.html?product_no=991&cate_no=1092&display_group=1
-센서,릴레이/스위치,D-46,아두이노 4x4 매트릭스 키패드 버튼 모듈,1100,https://eduino.kr/product/detail.html?product_no=123&cate_no=1092&display_group=1
-센서,모터/제어,D-61,아두이노 SG90 서보모터 180도,2200,https://eduino.kr/product/detail.html?product_no=114&cate_no=1008&display_group=1
-센서,모터/제어,D-55,아두이노 로봇용 DC모터 바퀴 세트,3500,https://eduino.kr/product/detail.html?product_no=196&cate_no=1008&display_group=1
-센서,모터/제어,D-51,아두이노 2채널 모터 드라이버 모듈,1500,https://eduino.kr/product/detail.html?product_no=186&cate_no=1092&display_group=1
-센서,모터/제어,D-75,아두이노 N20 6V 소형 기어드 DC모터,4400,https://eduino.kr/product/detail.html?product_no=756&cate_no=1092&display_group=1
-센서,모터/제어,D-40,아두이노 MG90S 360도 메탈기어 서보모터,5500,https://eduino.kr/product/detail.html?product_no=1920&cate_no=1092&display_group=1
-센서,통신,D-1,아두이노 블루투스 HC-06 모듈,5500,https://eduino.kr/product/detail.html?product_no=27&cate_no=1092&display_group=1
-센서,통신,D-7,아두이노 RFID-RC522 리더기 모듈 세트,2200,https://eduino.kr/product/detail.html?product_no=219&cate_no=1023&display_group=1
-센서,통신,D-9,아두이노 적외선 리모컨 세트,1800,https://eduino.kr/product/detail.html?product_no=83&cate_no=1023&display_group=1
-센서,LED/네오픽셀,D-13,아두이노 3색 RGB LED 모듈,880,https://eduino.kr/product/detail.html?product_no=69&cate_no=1092&display_group=1
-센서,LED/네오픽셀,D-29,아두이노 0.56인치 7세그먼트 FND Cathode,220,https://eduino.kr/product/detail.html?product_no=205&cate_no=1092&display_group=1
-센서,LED/네오픽셀,D-102,아두이노 3색 RGB LED 신호등 모듈,770,https://eduino.kr/product/detail.html?product_no=613&cate_no=1092&display_group=1
-센서,LED/네오픽셀,D-35,아두이노 8x8 도트 매트릭스 MAX7219 모듈,2800,https://eduino.kr/product/detail.html?product_no=367&cate_no=1092&display_group=1
-센서,LED/네오픽셀,D-96,아두이노 네오픽셀 8비트 RGB LED 원형 WS2812,3300,https://eduino.kr/product/detail.html?product_no=607&cate_no=1092&display_group=1
-센서,LED/네오픽셀,D-97,아두이노 네오픽셀 12비트 RGB LED 원형 WS2812,6600,https://eduino.kr/product/detail.html?product_no=608&cate_no=1092&display_group=1
-센서,LED/네오픽셀,D-31,아두이노 시계형 7세그먼트 4칸 FND,1500,https://eduino.kr/product/detail.html?product_no=403&cate_no=1092&display_group=1
-센서,소리/영상,E-31,아두이노 수동 부저 / 피에조 부저,550,https://eduino.kr/product/detail.html?product_no=237&cate_no=62&display_group=1
-센서,소리/영상,E-33,아두이노 수동 부저 모듈 / 피에조 부저 모듈,1650,https://eduino.kr/product/detail.html?product_no=453&cate_no=62&display_group=1
-센서,가속도/자이로,C-31,아두이노 기울기센서 6축 가속도+자이로 MPU-6050,3500,https://eduino.kr/product/detail.html?product_no=54&cate_no=60&display_group=1
+category,subcategories,code,name,price,url,option_name,options
+보드,,A-1,아두이노 우노 R3 호환보드 SMD 타입,2900,https://eduino.kr/product/detail.html?product_no=59&cate_no=134&display_group=1,,
+보드,,A-7,아두이노 나노 v3.0 328P 호환보드,2850,https://eduino.kr/product/detail.html?product_no=130&cate_no=134&display_group=1,,
+보드,,B-10,아두이노 센서 확장 쉴드 V5.0,1800,https://eduino.kr/product/detail.html?product_no=115&cate_no=134&display_group=1,,
+보드,,B-18,아두이노 나노 I/O 확장 프로토 쉴드,1800,https://eduino.kr/product/detail.html?product_no=174&cate_no=134&display_group=1,,
+센서,환경|수질/토양,C-5,아두이노 토양 수분감지 센서 모듈,1100,https://eduino.kr/product/detail.html?product_no=84&cate_no=34&display_group=1,,
+센서,환경|수질/토양,C-6,아두이노 빗물감지 수위 측정 센서 모듈,440,https://eduino.kr/product/detail.html?product_no=106&cate_no=34&display_group=1,,
+센서,환경,C-73,아두이노 온도 습도 온습도 모듈(케이블 포함) DHT-11,1500,https://eduino.kr/product/detail.html?product_no=91&cate_no=34&display_group=1,,
+센서,환경,C-49,아두이노 미세먼지 측정 센서 PM2.5 GP2Y1014AU,8800,https://eduino.kr/product/detail.html?product_no=433&cate_no=34&display_group=1,,
+센서,거리/위치,C-21,아두이노 초음파센서 HC-SR04,1100,https://eduino.kr/product/detail.html?product_no=39&cate_no=54&display_group=1,,
+센서,거리/위치|조도/적외선/컬러,C-23,장애물 감지 아두이노 적외선(IR) 송수신 센서 모듈,880,https://eduino.kr/product/detail.html?product_no=87&cate_no=54&display_group=1,,
+센서,거리/위치,C-26,아두이노 적외선 거리측정센서 10~80cm 2Y0A21,9500,https://eduino.kr/product/detail.html?product_no=235&cate_no=54&display_group=1,,
+센서,거리/위치,C-30,적외선 고정밀 ToF 거리센서 VL53L0X V2,5500,https://eduino.kr/product/detail.html?product_no=1117&cate_no=54&display_group=1,,
+센서,압력/접촉,C-83,아두이노 정전식 터치센서 TTP223B,660,https://eduino.kr/product/detail.html?product_no=370&cate_no=996&display_group=1,,
+센서,압력/접촉,C-84,아두이노 16키 디지털 터치 센서 TTP229 모듈,2500,https://eduino.kr/product/detail.html?product_no=303&cate_no=996&display_group=1,,
+센서,압력/접촉,C-62,아두이노 충격센서 / 진동센서 모듈 SW-18010P,1100,https://eduino.kr/product/detail.html?product_no=289&cate_no=996&display_group=1,,
+센서,압력/접촉,C-18,아두이노 멤브레인 1x4 키패드 센서,1100,https://eduino.kr/product/detail.html?product_no=1376&cate_no=1092&display_group=1,,
+센서,조도/적외선/컬러,C-54,아두이노 광 포토셀 CdS 조도센서 모듈,770,https://eduino.kr/product/detail.html?product_no=234&cate_no=992&display_group=1,,
+센서,조도/적외선/컬러,C-52,아두이노 적외선 PIR 센서 인체감지 모션센서 HC-SR501,1200,https://eduino.kr/product/detail.html?product_no=104&cate_no=992&display_group=1,,
+센서,조도/적외선/컬러,D-47,아두이노 적외선 레이저 모듈 5V,770,https://eduino.kr/product/detail.html?product_no=68&cate_no=992&display_group=1,,
+센서,조도/적외선/컬러,C-66,아두이노 RGB 컬러 센서 TCS34725 모듈,5500,https://eduino.kr/product/detail.html?product_no=390&cate_no=992&display_group=1,,
+센서,LCD/디스플레이,D-23,아두이노 LCD 16x2 4핀 I2C 디스플레이,3400,https://eduino.kr/product/detail.html?product_no=105&cate_no=1004&display_group=1,,
+센서,LCD/디스플레이,D-26,아두이노 LCD 20x4 4핀 I2C 디스플레이,6600,https://eduino.kr/product/detail.html?product_no=133&cate_no=1004&display_group=1,,
+센서,LCD/디스플레이,D-28,아두이노 128x64 OLED 0.96인치 I2C 디스플레이,4800,https://eduino.kr/product/detail.html?product_no=58&cate_no=1004&display_group=1,,
+센서,LCD/디스플레이,D-69,아두이노 1.8인치 128x160 TFT LCD 모듈,9900,https://eduino.kr/product/detail.html?product_no=316&cate_no=1004&display_group=1,,
+센서,릴레이/스위치,D-41,아두이노 1채널 5V 릴레이 모듈,990,https://eduino.kr/product/detail.html?product_no=56&cate_no=1019&display_group=1,,
+센서,릴레이/스위치,D-50,아두이노 조이스틱 모듈,990,https://eduino.kr/product/detail.html?product_no=78&cate_no=1092&display_group=1,,
+센서,릴레이/스위치,D-104,택트 스위치 버튼 모듈 KY-004,770,https://eduino.kr/product/detail.html?product_no=991&cate_no=1092&display_group=1,,
+센서,릴레이/스위치,D-46,아두이노 4x4 매트릭스 키패드 버튼 모듈,1100,https://eduino.kr/product/detail.html?product_no=123&cate_no=1092&display_group=1,,
+센서,모터/제어,D-61,아두이노 SG90 서보모터 180도,2200,https://eduino.kr/product/detail.html?product_no=114&cate_no=1008&display_group=1,,
+센서,모터/제어,D-55,아두이노 로봇용 DC모터 바퀴 세트,3500,https://eduino.kr/product/detail.html?product_no=196&cate_no=1008&display_group=1,,
+센서,모터/제어,D-51,아두이노 2채널 모터 드라이버 모듈,1500,https://eduino.kr/product/detail.html?product_no=186&cate_no=1092&display_group=1,,
+센서,모터/제어,D-75,아두이노 N20 6V 소형 기어드 DC모터,4400,https://eduino.kr/product/detail.html?product_no=756&cate_no=1092&display_group=1,모델,6V|9V
+센서,모터/제어,D-40,아두이노 MG90S 360도 메탈기어 서보모터,5500,https://eduino.kr/product/detail.html?product_no=1920&cate_no=1092&display_group=1,,
+센서,통신,D-1,아두이노 블루투스 HC-06 모듈,5500,https://eduino.kr/product/detail.html?product_no=27&cate_no=1092&display_group=1,,
+센서,통신,D-7,아두이노 RFID-RC522 리더기 모듈 세트,2200,https://eduino.kr/product/detail.html?product_no=219&cate_no=1023&display_group=1,,
+센서,통신,D-9,아두이노 적외선 리모컨 세트,1800,https://eduino.kr/product/detail.html?product_no=83&cate_no=1023&display_group=1,,
+센서,LED/네오픽셀,D-13,아두이노 3색 RGB LED 모듈,880,https://eduino.kr/product/detail.html?product_no=69&cate_no=1092&display_group=1,,
+센서,LED/네오픽셀,D-29,아두이노 0.56인치 7세그먼트 FND Cathode,220,https://eduino.kr/product/detail.html?product_no=205&cate_no=1092&display_group=1,,
+센서,LED/네오픽셀,D-102,아두이노 3색 RGB LED 신호등 모듈,770,https://eduino.kr/product/detail.html?product_no=613&cate_no=1092&display_group=1,,
+센서,LED/네오픽셀,D-35,아두이노 8x8 도트 매트릭스 MAX7219 모듈,2800,https://eduino.kr/product/detail.html?product_no=367&cate_no=1092&display_group=1,,
+센서,LED/네오픽셀,D-96,아두이노 네오픽셀 8비트 RGB LED 원형 WS2812,3300,https://eduino.kr/product/detail.html?product_no=607&cate_no=1092&display_group=1,,
+센서,LED/네오픽셀,D-97,아두이노 네오픽셀 12비트 RGB LED 원형 WS2812,6600,https://eduino.kr/product/detail.html?product_no=608&cate_no=1092&display_group=1,,
+센서,LED/네오픽셀,D-31,아두이노 시계형 7세그먼트 4칸 FND,1500,https://eduino.kr/product/detail.html?product_no=403&cate_no=1092&display_group=1,,
+센서,소리/영상,E-31,아두이노 수동 부저 / 피에조 부저,550,https://eduino.kr/product/detail.html?product_no=237&cate_no=62&display_group=1,,
+센서,소리/영상,E-33,아두이노 수동 부저 모듈 / 피에조 부저 모듈,1650,https://eduino.kr/product/detail.html?product_no=453&cate_no=62&display_group=1,,
+센서,가속도/자이로,C-31,아두이노 기울기센서 6축 가속도+자이로 MPU-6050,3500,https://eduino.kr/product/detail.html?product_no=54&cate_no=60&display_group=1,,
+전자부품,IC/기본소자,E-14,아두이노 5파이(5mm) LED,110,https://eduino.kr/product/detail.html?product_no=202&cate_no=76&display_group=1,색상,빨강색|노랑색|파랑색|초록색|백색
+전자부품,IC/기본소자,E-92,아두이노 12x12 택트 스위치,220,https://eduino.kr/product/detail.html?product_no=310&cate_no=76&display_group=1,,
+전자부품,IC/기본소자,E-13,아두이노 RGB 3색 LED (4핀) 센서,330,https://eduino.kr/product/detail.html?product_no=286&cate_no=76&display_group=1,,
+전자부품,IC/기본소자,E-36,아두이노 로터리형 15파이 가변저항 10K / 포텐셔미터,880,https://eduino.kr/product/detail.html?product_no=319&cate_no=76&display_group=1,,
+전자부품,주변부품,E-27,아두이노 3핀 슬라이드 스위치,330,https://eduino.kr/product/detail.html?product_no=243&cate_no=68&display_group=1,,
+전자부품,주변부품,E-63,아두이노 초음파센서 HC-SR04 브라켓,2000,https://eduino.kr/product/detail.html?product_no=240&cate_no=68&display_group=1,,
+전자부품,주변부품,E-151,아두이노 15파이 가변저항용 노브 손잡이,1100,https://eduino.kr/product/detail.html?product_no=1119,,
+전자부품,브레드보드,E-83,미니 브레드보드 170홀 (5색),400,https://eduino.kr/product/detail.html?product_no=166&cate_no=70&display_group=1,색상,검정색|흰색|녹색|빨간색|파란색
+전자부품,브레드보드,E-80,아두이노 브레드보드 400홀(불투명),2200,https://eduino.kr/product/detail.html?product_no=43&cate_no=70&display_group=1,,
+전자부품,브레드보드,E-82,아두이노 브레드보드 830홀(불투명),3500,https://eduino.kr/product/detail.html?product_no=90&cate_no=70&display_group=1,,
+전자부품,케이블,E-52,아두이노 우노용 USB-B 케이블 1.5m,3300,https://eduino.kr/product/detail.html?product_no=279&cate_no=71&display_group=1,,
+전자부품,케이블,E-57,아두이노 듀에용 micro-USB 케이블 1.5m,3300,https://eduino.kr/product/detail.html?product_no=473&cate_no=71&display_group=1,,
+전자부품,케이블,E-49,아두이노 점퍼케이블 수-수 10cm 40핀,2500,https://eduino.kr/product/detail.html?product_no=342&cate_no=71&display_group=1,,
+전자부품,케이블,E-47,아두이노 점퍼케이블 암-수 10cm 40핀,2500,https://eduino.kr/product/detail.html?product_no=102&cate_no=71&display_group=1,,
+전자부품,케이블,E-45,아두이노 점퍼케이블 수-수 20cm 40핀,3000,https://eduino.kr/product/detail.html?product_no=50&cate_no=71&display_group=1,,
+전자부품,케이블,E-44,아두이노 점퍼케이블 암-수 20cm 40핀,3000,https://eduino.kr/product/detail.html?product_no=49&cate_no=71&display_group=1,,
+전자부품,배터리/전원,E-62,아두이노 보드 전원 공급용 9V 1A 아답터 / 어댑터,12500,https://eduino.kr/product/detail.html?product_no=262&cate_no=79&display_group=1,,
