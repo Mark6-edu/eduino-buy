@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import io
 import csv
+from services.excel_service import create_order_excel
 from utils.calculator import format_currency
 
 # ============================================================================
@@ -918,6 +919,59 @@ def render_csv_download():
     )
 
 
+def render_excel_download():
+    """현재 장바구니를 학생별 Excel 구매 명세서로 다운로드한다."""
+    st.markdown("---")
+    st.subheader("⬇️ 품목내역 Excel 다운로드")
+
+    totals = calculate_cart_totals()
+
+    if totals["selected_count"] == 0:
+        st.info("담긴 상품이 있어야 품목내역 Excel을 다운로드할 수 있습니다.")
+        return
+
+    student_name = st.session_state.get("input_student_name", "").strip()
+    if not student_name:
+        st.warning(
+            "학생명 / 팀원명을 입력해주세요. "
+            "현재 상태에서도 다운로드는 가능하지만 학생 구분이 어렵습니다."
+        )
+
+    grade = st.session_state.get("select_grade", "")
+    class_name = st.session_state.get("select_class", "")
+    student_number = int(st.session_state.get("input_student_number", 1))
+
+    excel_bytes = create_order_excel(
+        grade=grade,
+        class_name=class_name,
+        student_number=student_number,
+        student_name=student_name,
+        selected_items=totals["selected_items"],
+        total_amount=totals["total_amount"],
+    )
+
+    filename = (
+        "Eduino_품목내역_"
+        f"{sanitize_filename(grade)}_"
+        f"{sanitize_filename(class_name)}_"
+        f"{student_number}번_"
+        f"{sanitize_filename(student_name)}.xlsx"
+    )
+
+    st.download_button(
+        label="📗 Excel 품목내역 다운로드",
+        data=excel_bytes,
+        file_name=filename,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        use_container_width=True,
+        type="primary",
+    )
+
+    st.caption(
+        "Excel은 기안문형 품목내역으로 생성되며, 학생 정보와 합계가 함께 포함됩니다."
+    )
+
+
 # ============================================================================
 # 선택 상품 요약
 # ============================================================================
@@ -1096,6 +1150,7 @@ def main():
     render_cart()
     render_selected_summary()
     render_csv_download()
+    render_excel_download()
 
     # 현재 스크롤 위치와 관계없이 viewport 상단 중앙에 3초간 표시
     render_top_notification()
