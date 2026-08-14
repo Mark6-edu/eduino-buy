@@ -129,7 +129,7 @@ def login_with_google():
         return
 
     try:
-        st.login("google")
+        st.login()
     except Exception:
         st.warning("Google 로그인 초기화에 실패했습니다. 설정을 확인해주세요.")
 
