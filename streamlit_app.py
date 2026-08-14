@@ -4,36 +4,10 @@ from pathlib import Path
 import re
 import io
 import csv
+from services.auth_service import is_teacher, render_auth_sidebar
 from services.excel_service import create_order_excel
 from services.google_sheet_service import submit_order_to_sheet
 from utils.calculator import format_currency
-
-# ============================================================================
-# 페이지 설정
-# ============================================================================
-
-st.set_page_config(
-    page_title="Eduino 구매 체크 확인",
-    page_icon="🤖",
-    layout="wide",
-)
-
-st.markdown(
-    """
-    <style>
-        div[data-testid="stSelectbox"] {
-            min-width: 140px;
-        }
-
-        .eduino-product-header {
-            font-weight: 700;
-            font-size: 0.92rem;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 
 # ============================================================================
 # 데이터 유틸
@@ -1091,7 +1065,23 @@ def render_selected_summary():
 # ============================================================================
 
 
-def main():
+def render_student_app():
+    st.markdown(
+        """
+        <style>
+            div[data-testid="stSelectbox"] {
+                min-width: 140px;
+            }
+
+            .eduino-product-header {
+                font-weight: 700;
+                font-size: 0.92rem;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     st.title("🤖 Eduino 구매 체크 확인")
     st.markdown("---")
 
@@ -1110,10 +1100,6 @@ def main():
 
     if products_df.empty:
         st.stop()
-
-    # ------------------------------------------------------------------------
-    # 학생/팀 정보
-    # ------------------------------------------------------------------------
 
     st.subheader("📝 학생/팀 기본정보")
 
@@ -1158,28 +1144,20 @@ def main():
         "같은 상품을 다시 담으면 동일한 옵션 기준으로 수량이 누적됩니다."
     )
 
-    # ------------------------------------------------------------------------
-    # 상품 영역
-    # ------------------------------------------------------------------------
-
     categories = products_df["category"].dropna().unique().tolist()
 
-    # 보드는 우선 고정적으로 먼저 표시
     if "보드" in categories:
         render_board_category(products_df)
         st.markdown("")
 
-    # 센서
     if "센서" in categories:
         render_sensor_category(products_df)
         st.markdown("")
 
-    # 전자부품
     if "전자부품" in categories:
         render_electronic_parts_category(products_df)
         st.markdown("")
 
-    # 향후 추가되는 다른 카테고리도 동일한 담기 방식으로 자동 처리
     reserved_categories = {"보드", "센서", "전자부품"}
 
     for category in categories:
@@ -1189,18 +1167,43 @@ def main():
         render_generic_category(products_df, category)
         st.markdown("")
 
-    # ------------------------------------------------------------------------
-    # 장바구니 및 요약
-    # ------------------------------------------------------------------------
-
     render_cart()
     render_selected_summary()
     render_csv_download()
     render_excel_download()
     render_final_submit()
 
-    # 현재 스크롤 위치와 관계없이 viewport 상단 중앙에 3초간 표시
     render_top_notification()
+
+
+def main():
+    st.set_page_config(
+        page_title="Eduino 구매",
+        page_icon="🛒",
+        layout="wide",
+    )
+
+    render_auth_sidebar()
+
+    student_page = st.Page(
+        "views/student_page.py",
+        title="Eduino 구매",
+        icon="🛒",
+        default=True,
+    )
+
+    teacher_page = st.Page(
+        "pages/1_교사용_주문관리.py",
+        title="교사용 주문관리",
+        icon="🧑‍🏫",
+    )
+
+    pages = [student_page]
+    if is_teacher():
+        pages.append(teacher_page)
+
+    navigation = st.navigation(pages)
+    navigation.run()
 
 
 if __name__ == "__main__":

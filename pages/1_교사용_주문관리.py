@@ -3,6 +3,7 @@ import io
 import pandas as pd
 import streamlit as st
 
+from services.auth_service import is_teacher
 from services.google_sheet_service import (
     fetch_order_summary,
     fetch_submissions,
@@ -10,6 +11,10 @@ from services.google_sheet_service import (
 )
 from services.excel_service import create_order_excel
 
+
+if not is_teacher():
+    st.warning("이 페이지는 교사 전용입니다.")
+    st.stop()
 
 st.set_page_config(
     page_title="교사용 주문 관리",
