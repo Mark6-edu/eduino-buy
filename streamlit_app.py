@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 import re
+import io
+import csv
 from utils.calculator import format_currency
 
 # ============================================================================
@@ -652,84 +654,98 @@ def render_cart():
 
 
 # ============================================================================
-# CSV 다운로드
+# CSV 구매 명세서 다운로드
 # ============================================================================
 
 
 def sanitize_filename(value):
-    """파일명에 사용할 수 없는 문자를 제거한다."""
+    """다운로드 파일명에서 사용할 수 없는 문자를 안전하게 치환한다."""
     text = str(value or "").strip()
     text = re.sub(r'[\\/:*?"<>|]+', "_", text)
     text = re.sub(r"\s+", "_", text)
     return text or "미입력"
 
 
-def build_order_csv():
+def build_order_csv_bytes():
     """
-    현재 장바구니를 CSV 다운로드용 DataFrame과 파일명으로 변환한다.
-
-    각 주문 행에 학생 정보를 반복 기록하여 CSV 한 파일만으로도
-    누가 어떤 부품을 주문했는지 확인할 수 있게 한다.
+    학생 기본정보는 상단에 한 번만,
+    구매 상품은 아래 표 형태로,
+    총 구매 예상금액은 마지막에 한 번만 기록한다.
     """
     totals = calculate_cart_totals()
 
     grade = st.session_state.get("select_grade", "")
     class_name = st.session_state.get("select_class", "")
+    student_number = int(st.session_state.get("input_student_number", 1))
     student_name = st.session_state.get("input_student_name", "").strip()
 
-    rows = []
+    output = io.StringIO()
+    writer = csv.writer(output, lineterminator="\n")
+
+    # 제목
+    writer.writerow(["Eduino 구매 명세서"])
+    writer.writerow([])
+
+    # 학생 기본정보: 각각 한 번만 기록
+    writer.writerow(["학년", grade])
+    writer.writerow(["반", class_name])
+    writer.writerow(["번호", f"{student_number}번"])
+    writer.writerow(["학생명/팀원명", student_name])
+    writer.writerow([])
+
+    # 구매 상품 표
+    writer.writerow(["상품코드", "상품명", "옵션", "단가", "수량", "금액"])
 
     for item in totals["selected_items"]:
-        rows.append(
-            {
-                "학년": grade,
-                "반": class_name,
-                "학생명/팀원명": student_name,
-                "상품코드": item["상품코드"],
-                "상품명": item["상품명"],
-                "옵션": item["옵션"],
-                "단가": item["단가"],
-                "수량": item["수량"],
-                "금액": item["금액"],
-                "총 구매 예상금액": totals["total_amount"],
-            }
+        writer.writerow(
+            [
+                item["상품코드"],
+                item["상품명"],
+                item["옵션"],
+                item["단가"],
+                item["수량"],
+                item["금액"],
+            ]
         )
 
-    df = pd.DataFrame(rows)
+    # 총액: 마지막에 한 번만 기록
+    writer.writerow([])
+    writer.writerow(["총 구매 예상금액", totals["total_amount"]])
+
+    # Excel에서 한글이 깨지지 않도록 UTF-8 BOM 적용
+    csv_bytes = output.getvalue().encode("utf-8-sig")
 
     filename = (
-        f"Eduino_구매명세서_"
+        "Eduino_구매명세서_"
         f"{sanitize_filename(grade)}_"
         f"{sanitize_filename(class_name)}_"
+        f"{student_number}번_"
         f"{sanitize_filename(student_name)}.csv"
     )
 
-    return df, filename
+    return csv_bytes, filename
 
 
 def render_csv_download():
-    """장바구니 내용을 CSV 파일로 다운로드할 수 있게 한다."""
+    """현재 장바구니를 학생별 CSV 구매 명세서로 다운로드한다."""
     st.markdown("---")
     st.subheader("⬇️ 구매 명세서 CSV 다운로드")
 
     totals = calculate_cart_totals()
 
     if totals["selected_count"] == 0:
-        st.info("담긴 상품이 있어야 CSV 파일을 다운로드할 수 있습니다.")
+        st.info("담긴 상품이 있어야 CSV 구매 명세서를 다운로드할 수 있습니다.")
         return
 
     student_name = st.session_state.get("input_student_name", "").strip()
 
     if not student_name:
         st.warning(
-            "학생명 / 팀원명이 비어 있습니다. "
-            "다운로드는 가능하지만, 구분을 위해 이름을 입력하는 것을 권장합니다."
+            "학생명 / 팀원명을 입력해주세요. "
+            "현재 상태에서도 다운로드는 가능하지만 학생 구분이 어렵습니다."
         )
 
-    csv_df, filename = build_order_csv()
-
-    # Excel에서 한글이 깨지지 않도록 UTF-8 BOM 사용
-    csv_bytes = csv_df.to_csv(index=False).encode("utf-8-sig")
+    csv_bytes, filename = build_order_csv_bytes()
 
     st.download_button(
         label="📥 CSV 구매 명세서 다운로드",
@@ -741,8 +757,8 @@ def render_csv_download():
     )
 
     st.caption(
-        "CSV에는 학년, 반, 학생명/팀원명, 상품코드, 상품명, 옵션, "
-        "단가, 수량, 금액, 총 구매 예상금액이 포함됩니다."
+        "CSV에는 학생 기본정보가 상단에 한 번만 기록되고, "
+        "그 아래에 상품 목록과 최종 총 구매 예상금액이 표시됩니다."
     )
 
 
@@ -845,7 +861,7 @@ def main():
 
     st.subheader("📝 학생/팀 기본정보")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.selectbox(
@@ -862,9 +878,19 @@ def main():
         )
 
     with col3:
+        st.number_input(
+            "번호",
+            min_value=1,
+            max_value=50,
+            value=1,
+            step=1,
+            key="input_student_number",
+        )
+
+    with col4:
         st.text_input(
             "학생명 / 팀원명",
-            placeholder="예: 김철수, 이영희",
+            placeholder="예: 김철수 또는 김철수, 이영희",
             key="input_student_name",
         )
 
