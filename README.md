@@ -1,623 +1,261 @@
-🤖 Eduino 구매 체크 확인
+# 🤖 Eduino 구매 체크 확인
 
-학교 수업용 아두이노 프로젝트 부품 구매 확인 및 주문 관리 웹 애플리케이션
+> **아두이노 프로젝트 부품 선택부터 학생 제출, 교사용 통합 주문 관리까지 한 번에 처리하는 Streamlit 기반 교육용 구매 관리 시스템**
 
-📋 프로젝트 개요
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/Google%20Sheets-Storage-34A853?logo=googlesheets&logoColor=white" alt="Google Sheets">
+  <img src="https://img.shields.io/badge/Google%20Apps%20Script-API-4285F4?logo=googleappsscript&logoColor=white" alt="Apps Script">
+  <img src="https://img.shields.io/badge/Google-OIDC-4285F4?logo=google&logoColor=white" alt="Google OIDC">
+</p>
 
-Eduino 구매 체크 확인은 학생 또는 프로젝트 팀이 아두이노 프로젝트에 필요한 부품을 선택하고, 옵션과 수량을 지정한 뒤 예상 구매 금액을 자동으로 계산할 수 있도록 만든 Streamlit 기반 웹 애플리케이션입니다.
+<p align="center">
+  <a href="https://eduino-buy.streamlit.app/">🌐 Live App</a>
+  ·
+  <a href="https://eduino.kr/">🛒 Eduino 공식 사이트</a>
+</p>
+
+---
+
+## 📌 프로젝트 소개
+
+### 프로젝트 목적
+
+**Eduino 구매 체크 확인**은 학교 아두이노 프로젝트 수업에서 학생 또는 프로젝트 팀이 필요한 부품을 선택하고, 수량과 옵션을 지정하고, 예상 구매 금액을 계산한 뒤 최종 주문 내역을 제출할 수 있도록 만든 웹 애플리케이션입니다.
+
+학생이 제출한 데이터는 **Google Apps Script Web App**을 통해 **Google Sheets**에 저장되며, 교사는 Google 계정 인증 후 별도의 주문관리 페이지에서 학생별 제출 현황과 전체 통합 주문 내역을 확인할 수 있습니다.
+
+### 핵심 특징
+
+- 학생은 로그인 없이 구매 체크리스트 사용
+- 상품 옵션 및 옵션별 추가금액 자동 계산
+- 장바구니 기반 주문 구성
+- CSV / Excel 구매 명세서 생성
+- Google Sheets 최종 제출
+- Google OAuth / OIDC 기반 교사 인증
+- 학생별 최신 제출 자동 판별
+- 상품코드 + 옵션 기준 전체 주문 통합
+- 교사용 통합 Excel 다운로드
+
+---
+
+## 🎯 프로젝트 한눈에 보기
+
+| 👨‍🎓 학생 | ⚙️ 시스템 | 👩‍🏫 교사 |
+|---|---|---|
+| 부품 선택 | Streamlit UI | Google 로그인 |
+| 옵션·수량 설정 | Apps Script API | 제출 현황 확인 |
+| 장바구니 관리 | Google Sheets 저장 | 학생별 상세 조회 |
+| 주문 요약 | 최신 제출 판별 | 전체 주문 통합 |
+| CSV / Excel 다운로드 | 상품+옵션 기준 집계 | 통합 Excel 다운로드 |
+| 최종 제출 | OIDC 인증 | 허용 계정만 접근 |
+
+---
+
+## 🧩 해결하고자 한 문제
+
+아두이노 프로젝트 수업에서는 학생들이 필요한 부품을 직접 정해야 하지만 실제 구매 단계에서는 다음과 같은 문제가 발생할 수 있습니다.
+
+### 학생 측 문제
+
+- 필요한 부품을 어떤 형식으로 제출해야 하는지 통일하기 어려움
+- 수량 변경 시 금액을 다시 계산해야 함
+- 상품 옵션에 따른 가격 차이를 놓치기 쉬움
+- 여러 상품을 선택했을 때 전체 예상금액을 계산하기 번거로움
+
+### 교사 측 문제
+
+- 학생마다 제출 형식이 다르면 전체 주문을 다시 정리해야 함
+- 같은 상품을 여러 학생이 주문하면 수량을 직접 합산해야 함
+- 학생이 재제출했을 때 어떤 제출이 최신인지 확인하기 어려움
+- 학생별 주문과 전체 주문을 별도로 정리해야 함
+
+### 해결 방식
+
+```mermaid
+flowchart LR
+    A[👨‍🎓 학생] --> B[상품 선택]
+    B --> C[옵션·수량 설정]
+    C --> D[🛒 장바구니]
+    D --> E[📋 주문 요약]
+    E --> F[📤 최종 제출]
+    F --> G[Google Apps Script]
+    G --> H[(Google Sheets)]
+    H --> I[👩‍🏫 교사용 주문관리]
+    I --> J[📦 전체 주문 집계]
+    I --> K[📥 통합 Excel]
+```
 
-학생은 장바구니 방식으로 필요한 부품을 구성하고 CSV / Excel 구매 명세서를 다운로드하거나 최종 주문 내역을 제출할 수 있습니다.
+---
 
-제출된 주문 데이터는 Google Apps Script Web App을 통해 Google Sheets에 저장되며, 교사는 Google 계정 인증 후 별도의 주문관리 페이지에서 학생별 제출 현황과 전체 통합 주문 내역을 확인할 수 있습니다.
+## ✨ 주요 기능
 
-Eduino 공식 사이트:
-https://eduino.kr/
+### 👨‍🎓 학생 기능
 
-✨ 주요 기능
-
-👨‍🎓 학생 기능
-
-1. 학생 기본정보 입력
-
-학생 주문을 구분하기 위해 다음 정보를 입력합니다.
-
-학년
-
-반
-
-번호
-
-학생명 / 팀원명
-
-예:
-
-1학년
-3반
-15번
-홍길동
-
-2. 카테고리별 상품 선택
-
-상품은 data/products.csv를 기반으로 표시됩니다.
-
-주요 분류:
-
-보드
-
-센서 & 모듈
-
-전자부품
-
-센서 & 모듈은 다시 다음과 같은 세부 분류로 구분됩니다.
-
-환경
-
-거리/위치
-
-수질/토양
-
-압력/접촉
-
-조도/적외선/컬러
-
-LCD/디스플레이
-
-릴레이/스위치
-
-모터/제어
-
-통신
-
-LED/네오픽셀
-
-소리/영상
-
-가속도/자이로
-
-전자부품은 다음 분류를 사용합니다.
-
-IC/기본소자
-
-주변부품
-
-브레드보드
-
-케이블
-
-배터리/전원
-
-3. 상품 옵션 선택
-
-상품에 옵션이 있는 경우 옵션을 선택할 수 있습니다.
-
-예:
-
-5mm LED
-→ 빨강색
-→ 노랑색
-→ 파랑색
-→ 초록색
-→ 백색
-
-또는:
-
-N20 DC 모터
-→ 50RPM
-→ 100RPM
-→ 300RPM
-
-옵션에 따라 추가금액이 있는 상품은 선택 즉시 실제 단가가 변경됩니다.
-
-4. 옵션별 가격 자동 계산
-
-상품 가격은 다음 방식으로 계산됩니다.
-
-최종 단가
-=
-기본 가격
-+
-옵션 추가금액
-
-예:
-
-N20 모터 기본가격: 4,400원
-
-50RPM
-→ +0원
-→ 4,400원
-
-100RPM
-→ +1,100원
-→ 5,500원
-
-300RPM
-→ +2,200원
-→ 6,600원
-
-5. 장바구니
-
-상품을 바로 주문 목록에 넣는 방식이 아니라 다음 과정을 사용합니다.
-
-옵션 선택
-→ 수량 입력
-→ 담기
-→ 장바구니
-
-장바구니 특징:
-
-동일 상품 + 동일 옵션 재추가 시 수량 누적
-
-동일 상품 + 다른 옵션은 별도 품목으로 처리
-
-장바구니에서 직접 수량 수정 가능
-
-품목별 개별 삭제
-
-전체 장바구니 삭제
-
-상품 추가 시 화면 상단 팝업 알림
-
-예:
-
-E-14 / 빨강색 × 2
-E-14 / 파랑색 × 3
-
-두 품목은 서로 별도로 관리됩니다.
-
-6. 주문 요약
-
-현재 장바구니를 기반으로 다음 정보를 한 번에 확인할 수 있습니다.
-
-선택 상품 목록
-
-선택 품목 수
-
-전체 구매 수량
-
-총 구매 예상금액
-
-예:
-
-선택 품목
-6종
-
-총 수량
-8개
-
-총 구매 예상금액
-21,310원
-
-7. CSV 구매 명세서 다운로드
-
-학생별 주문 내역을 CSV 파일로 다운로드할 수 있습니다.
-
-CSV는 학교 기안문 품목내역 형태를 기준으로 구성됩니다.
-
-예:
-
-<품목내역>
-
-학년,1학년
-반,3반
-번호,15번
-학생명/팀원명,홍길동
-
-순번,내용,규격,수량,단위,예상단가,예상금액
-1-1,아두이노 우노 R3,A-1,1,개,2900,2900
-1-2,아두이노 5파이 LED,빨강색,3,개,110,330
-
-,합계,,,,,3230
-
-파일명 예:
-
-Eduino_품목내역_1학년_3반_15번_홍길동.csv
-
-CSV는 Excel 한글 호환성을 위해 UTF-8 BOM 형식으로 생성됩니다.
-
-8. Excel 구매 명세서 다운로드
-
-학생별 주문 내역을 .xlsx 형식으로 다운로드할 수 있습니다.
-
-Excel 문서는 다음 항목을 포함합니다.
-
-학생 기본정보
-
-품목내역
-
-규격
-
-수량
-
-단가
-
-예상금액
-
-전체 합계
-
-학교 행정문서 형태로 사용할 수 있도록 다음 스타일을 적용합니다.
-
-제목 병합
-
-Header Bold
-
-중앙 정렬
-
-테두리
-
-열 너비 조정
-
-상품명 자동 줄바꿈
-
-천 단위 금액 표시
-
-9. 최종 제출
-
-학생은 현재 장바구니 내용을 최종 제출할 수 있습니다.
-
+| 기능 | 설명 |
+|---|---|
+| 📝 **학생 기본정보** | 학년, 반, 번호, 학생명/팀원명 입력 |
+| 📦 **카테고리별 상품 탐색** | 보드, 센서&모듈, 전자부품 분류 |
+| ⚙️ **옵션 선택** | 색상, 기어비 등 상품별 옵션 선택 |
+| 💰 **옵션별 가격 계산** | 기본가격 + 옵션 추가금액 자동 반영 |
+| 🛒 **장바구니** | 동일 상품 수량 누적 및 옵션별 분리 |
+| 🔢 **수량 수정** | 장바구니에서 수량 직접 변경 |
+| 🗑️ **삭제 기능** | 개별 상품 삭제 및 전체 삭제 |
+| 📋 **주문 요약** | 선택 품목 수, 총수량, 총 예상금액 표시 |
+| 📄 **CSV 다운로드** | 학교 기안문형 품목내역 생성 |
+| 📗 **Excel 다운로드** | 학생별 구매 명세서 생성 |
+| 📤 **최종 제출** | Apps Script를 통해 Google Sheets 저장 |
+
+### 👩‍🏫 교사용 기능
+
+| 기능 | 설명 |
+|---|---|
+| 🔐 **Google 로그인** | Streamlit OIDC 기반 Google 인증 |
+| ✅ **교사 allowlist** | 허용된 이메일만 주문관리 접근 |
+| 👨‍🎓 **학생 제출 현황** | 학년, 반, 번호, 학생명, 제출일시 확인 |
+| 🔎 **학생별 주문 상세** | 학생의 최신 제출 상품 전체 조회 |
+| 🕒 **최신 제출 우선** | 동일 학생 재제출 시 최신 제출만 현재 주문으로 집계 |
+| 📦 **전체 주문 통합** | 상품코드 + 옵션 기준 전체 수량 집계 |
+| 💵 **전체 예상금액** | 전체 구매 예상금액 자동 계산 |
+| 📥 **통합 Excel** | 전체주문 + 학생별제출 시트 생성 |
+| 🔄 **데이터 새로고침** | Google Sheets 최신 데이터 재조회 |
+
+---
+
+## 🔄 사용 흐름
+
+### 학생 사용 흐름
+
+```mermaid
+flowchart LR
+    A[기본정보 입력]
+    --> B[상품 선택]
+    --> C[옵션 / 수량 설정]
+    --> D[장바구니 담기]
+    --> E[주문 요약 확인]
+    --> F[CSV / Excel]
+    --> G[최종 제출]
+```
+
+### 교사 사용 흐름
+
+```mermaid
+flowchart LR
+    A[Google 로그인]
+    --> B{교사 이메일 확인}
+    B -->|허용| C[교사용 주문관리]
+    B -->|미허용| D[학생 구매 화면만 이용]
+    C --> E[학생 제출 현황]
+    C --> F[학생별 상세]
+    C --> G[전체 주문 통합]
+    C --> H[Excel 다운로드]
+```
+
+---
+
+## 🖥️ 주요 화면
+
+> `docs/images/` 폴더에 실제 화면 이미지를 추가하면 아래 영역에 바로 표시할 수 있습니다.
+
+### 학생 구매 화면
+
+```markdown
+![학생 구매 화면](docs/images/student-main.png)
+```
+
+### 장바구니 및 주문 요약
+
+```markdown
+![장바구니](docs/images/student-cart.png)
+```
+
+### 교사용 주문관리
+
+```markdown
+![교사용 주문관리](docs/images/teacher-dashboard.png)
+```
+
+### Google Sheets 저장 결과
+
+```markdown
+![Google Sheets](docs/images/google-sheets.png)
+```
+
+---
+
+## 🧱 시스템 구성
+
+### 전체 아키텍처
+
+```mermaid
+flowchart TD
+    U1[👨‍🎓 학생 브라우저]
+    U2[👩‍🏫 교사 브라우저]
+
+    S[Streamlit Community Cloud]
+    AUTH[Google OAuth / OIDC]
+    GAS[Google Apps Script Web App]
+    SHEET[(Google Sheets)]
+    CSV[data/products.csv]
+
+    U1 --> S
+    U2 --> AUTH
+    AUTH --> S
+
+    CSV --> S
+    S -->|POST submit_order| GAS
+    S -->|GET submissions| GAS
+    GAS --> SHEET
+```
+
+### 데이터 흐름
+
+```text
+학생
+↓
 Streamlit
 ↓
-Google Apps Script Web App
+Apps Script POST
 ↓
-Google Sheets
+Google Sheets 저장
 
-학생이 제출하면 주문 상품 1개당 Google Sheet에 1행씩 저장됩니다.
 
-👩‍🏫 교사용 기능
-
-1. Google 계정 로그인
-
-학생은 로그인 없이 앱을 사용할 수 있습니다.
-
-교사용 주문관리 페이지는 Google 로그인 후 접근할 수 있습니다.
-
-인증 흐름:
-
+교사
+↓
 Google 로그인
 ↓
-OIDC 인증
+Streamlit 교사용 페이지
 ↓
-로그인 이메일 확인
+Apps Script GET
 ↓
-교사 allowlist 확인
+최신 제출 추출
 ↓
-교사용 페이지 접근
-
-교사 이메일은 코드에 직접 작성하지 않고 Streamlit Secrets에서 관리합니다.
-
-2. 교사용 페이지 접근 제한
-
-다음 사용자는 교사용 주문관리 메뉴를 볼 수 없습니다.
-
-비로그인 사용자
-
-허용 목록에 등록되지 않은 Google 계정
-
-허용된 교사 계정만 다음 메뉴를 사용할 수 있습니다.
-
-🛒 Eduino 구매
-👩‍🏫 교사용 주문관리
-
-교사용 페이지는 메뉴 노출 여부뿐만 아니라 페이지 내부에서도 다시 권한을 검사합니다.
-
-3. 학생 제출 현황
-
-학생별 최신 제출 상태를 확인할 수 있습니다.
-
-표시 항목:
-
-학년
-
-반
-
-번호
-
-학생명
-
-제출일시
-
-품목수
-
-총수량
-
-총액
-
-정렬 기준:
-
-1순위: 학년
-2순위: 반
-3순위: 번호
-
-4. 최신 제출 우선 처리
-
-Google Sheets에는 학생이 제출할 때마다 기록이 계속 누적됩니다.
-
-예:
-
-1학년 1반 1번
-22:55 제출
-→ 이전 주문
-
-1학년 1반 1번
-23:08 제출
-→ 최신 주문
-
-교사용 주문관리에서는 같은 학생이 여러 번 제출한 경우 가장 최근 제출만 현재 주문으로 인정합니다.
-
-중요하게, 최신 행 하나만 선택하는 것이 아니라:
-
-submission_id
-+
-가장 최근 submitted_at
-
-이 동일한 모든 상품 행을 하나의 제출 묶음으로 처리합니다.
-
-5. 학생별 주문 상세
-
-학생을 선택하면 해당 학생의 최신 주문 상품 전체를 확인할 수 있습니다.
-
-표시 항목:
-
-상품코드
-
-상품명
-
-옵션
-
-단가
-
-수량
-
-금액
-
-학생별 총 구매 예상금액도 함께 표시됩니다.
-
-6. 전체 주문 통합
-
-전체 학생의 최신 제출 데이터를 기준으로 동일 상품을 자동 집계합니다.
-
-집계 기준:
-
-상품코드 + 옵션
-
-예:
-
-E-14 / 빨강색
-E-14 / 파랑색
-
-은 서로 다른 주문 품목으로 처리합니다.
-
-교사용 화면에서는 다음 항목을 확인할 수 있습니다.
-
-제출 학생 수
-
-주문 품목 수
-
-총 주문 수량
-
-전체 예상금액
-
-전체 주문 통합 테이블:
-
-상품코드
-상품명
-옵션
-예상단가
-총수량
-예상금액
-
-7. 교사용 전체 주문 Excel 다운로드
-
-교사는 최신 제출 기준 전체 주문 데이터를 Excel 파일로 다운로드할 수 있습니다.
-
-파일 예:
-
-Eduino_전체주문내역_2026-08-14.xlsx
-
-Excel에는 다음 시트가 포함됩니다.
-
-전체주문
-
-순번
-상품코드
-상품명
-옵션
-총수량
-단위
-예상단가
-예상금액
-
-학생별제출
-
-학년
-반
-번호
-학생명
-제출일시
-상품코드
-상품명
-옵션
-수량
-단가
-금액
-
-학생별제출 시트의 정렬 우선순위:
-
-1순위: 학년
-2순위: 반
-3순위: 번호
-
-🗂 Google Sheets 데이터 구조
-
-Google Drive:
-
-Drive
-└─ Streamlit
-   └─ Eduino 학생제출
-
-Google Sheet 탭:
-
-학생제출
-
-컬럼:
-
-제출ID
-제출일시
-학년
-반
-번호
-학생명
-상품코드
-상품명
-옵션
-단가
-수량
-금액
-총액
-
-예:
-
-1-3-15
-2026-08-14 22:20:00
-1학년
-3반
-15
-홍길동
-E-14
-아두이노 5파이 LED
-빨강색
-110
-3
-330
-11220
-
-한 학생이 여러 상품을 제출하면 동일한 제출ID와 제출일시로 여러 행이 저장됩니다.
-
-🔗 Google Apps Script 연동
-
-Streamlit에서 Google Sheets에 직접 접근하지 않습니다.
-
-다음 구조를 사용합니다.
-
-Streamlit
-↓
-HTTP requests
-↓
-Google Apps Script Web App
-↓
-Google Sheets
-
-Apps Script 주요 기능:
-
-doPost(e)
-→ 학생 주문 제출
-
-doGet(e)
-→ 교사용 데이터 조회
-
-getSubmissions()
-→ 학생 제출 원본 조회
-
-getSummary()
-→ 상품별 집계
-
-학생 주문 저장과 교사용 조회 API를 하나의 Apps Script Web App에서 처리합니다.
-
-🔐 Google 로그인
-
-교사용 로그인에는 Streamlit 내장 OIDC 기능을 사용합니다.
-
-사용 기능:
-
-st.login()
-st.user
-st.logout()
-
-Google OAuth Client는 Google Cloud Console에서 Web Application 형태로 생성합니다.
-
-Redirect URI 예:
-
-https://eduino-buy.streamlit.app/oauth2callback
-
-🔒 Streamlit Secrets
-
-민감정보는 GitHub에 저장하지 않습니다.
-
-Streamlit Community Cloud의 Secrets 기능을 사용합니다.
-
-예:
-
-[google_sheet]
-web_app_url = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"
-
-[auth]
-redirect_uri = "https://YOUR_APP.streamlit.app/oauth2callback"
-cookie_secret = "YOUR_RANDOM_COOKIE_SECRET"
-client_id = "YOUR_GOOGLE_CLIENT_ID"
-client_secret = "YOUR_GOOGLE_CLIENT_SECRET"
-server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration"
-
-teacher_emails = [
-    "YOUR_TEACHER_EMAIL"
-]
-
-다음 정보는 GitHub에 절대 커밋하지 않습니다.
-
-Google OAuth Client Secret
-
-cookie_secret
-
-Apps Script Web App URL
-
-교사 이메일 목록
-
-.streamlit/secrets.toml
-
-🛠 기술 스택
-
-Frontend / Application
-
-Python 3.11+
-
-Streamlit
-
-Pandas
-
-Document Export
-
-OpenPyXL
-
-Python csv
-
-Backend / Storage
-
-Google Apps Script
-
-Google Sheets
-
-Authentication
-
-Google OAuth 2.0 / OpenID Connect
-
-Streamlit OIDC
-
-st.login()
-
-st.user
-
-st.logout()
-
-HTTP Communication
-
-Requests
-
-Deployment
-
-Streamlit Community Cloud
-
-GitHub
-
-📂 프로젝트 구조
-
+전체 주문 집계
+```
+
+---
+
+## 🛠 기술 스택
+
+| 영역 | 기술 |
+|---|---|
+| Web App | Python 3.11+, Streamlit |
+| Data Processing | Pandas |
+| Export | OpenPyXL, Python CSV |
+| Backend API | Google Apps Script |
+| Storage | Google Sheets |
+| Authentication | Google OAuth 2.0 / OpenID Connect |
+| Auth UI | `st.login()`, `st.user`, `st.logout()` |
+| HTTP | Requests |
+| Deployment | Streamlit Community Cloud |
+| Version Control | GitHub |
+
+---
+
+## 📂 프로젝트 구조
+
+```text
 eduino-buy/
 │
 ├── streamlit_app.py
@@ -645,209 +283,395 @@ eduino-buy/
     ├── __init__.py
     ├── calculator.py
     └── export.py
+```
 
-📁 주요 파일 설명
+---
 
-streamlit_app.py
+## 📊 데이터 구조
 
-애플리케이션의 핵심 Entry Point입니다.
+### `products.csv`
 
-주요 역할:
+상품 정보는 `data/products.csv`에서 관리합니다.
 
-Streamlit page configuration
+| 필드 | 설명 |
+|---|---|
+| `category` | 상위 카테고리 |
+| `subcategories` | 세부 카테고리 |
+| `code` | 상품 코드 |
+| `name` | 상품명 |
+| `price` | 기본 판매가격 |
+| `url` | Eduino 상품 페이지 |
+| `option_name` | 옵션 이름 |
+| `options` | 선택 가능한 옵션 목록 |
+| `option_prices` | 옵션별 추가금액 |
 
-Session State 관리
+#### 예시
 
-상품 데이터 로딩
-
-상품 UI
-
-장바구니
-
-주문 요약
-
-CSV / Excel 다운로드
-
-Google Sheets 최종 제출
-
-인증 Sidebar
-
-st.Page
-
-st.navigation
-
-views/student_page.py
-
-학생용 구매 페이지를 Streamlit navigation에 연결합니다.
-
-학생은 로그인 없이 해당 페이지를 사용할 수 있습니다.
-
-pages/1_교사용_주문관리.py
-
-교사용 관리 페이지입니다.
-
-주요 기능:
-
-교사 권한 검사
-
-학생 제출 데이터 조회
-
-최신 제출 판별
-
-학년 / 반 / 학생명 필터
-
-학생 제출 현황
-
-학생별 상세 주문
-
-전체 주문 통합
-
-교사용 Excel 다운로드
-
-services/auth_service.py
-
-Google 로그인 및 교사 권한 판별을 담당합니다.
-
-주요 기능:
-
-교사 이메일 allowlist
-로그인 상태 확인
-로그인 이메일 확인
-교사 권한 확인
-인증 Sidebar
-로그아웃
-
-services/google_sheet_service.py
-
-Streamlit과 Apps Script Web App 간 HTTP 통신을 담당합니다.
-
-주요 기능:
-
-submit_order_to_sheet()
-fetch_submissions()
-fetch_order_summary()
-
-services/excel_service.py
-
-학생용 및 교사용 Excel 파일 생성을 담당합니다.
-
-주요 기능:
-
-학생별 구매 명세서
-
-전체 주문 통합 Excel
-
-학생별 제출 시트
-
-금액 Formatting
-
-행정문서 스타일
-
-utils/calculator.py
-
-금액 표시와 계산 보조 기능을 담당합니다.
-
-예:
-
-format_currency()
-
-utils/export.py
-
-내보내기 관련 공통 기능을 관리하기 위한 모듈입니다.
-
-data/products.csv
-
-Eduino 상품 정보를 저장합니다.
-
-📊 products.csv 구조
-
-현재 CSV 필드:
-
-필드
-
-설명
-
-category
-
-상위 상품 카테고리
-
-subcategories
-
-세부 카테고리
-
-code
-
-Eduino 상품 코드
-
-name
-
-상품명
-
-price
-
-기본 판매가격
-
-url
-
-Eduino 상품 URL
-
-option_name
-
-옵션 이름
-
-options
-
-선택 가능한 옵션
-
-option_prices
-
-옵션별 추가금액
-
-예:
-
+```csv
 category,subcategories,code,name,price,url,option_name,options,option_prices
 전자부품,IC/기본소자,E-14,아두이노 5파이(5mm) LED,110,https://eduino.kr/...,색상,빨강색|노랑색|파랑색|초록색|백색,
 센서,모터/제어,D-75,아두이노 N20 6V 소형 기어드 DC모터,4400,https://eduino.kr/...,기어비,50RPM|100RPM|300RPM,50RPM:0|100RPM:1100|300RPM:2200
+```
 
-⚙️ 옵션 데이터 규칙
+### 옵션 데이터 규칙
 
-options
+#### `options`
 
-옵션은 | 문자로 구분합니다.
+옵션은 `|`로 구분합니다.
 
+```text
 빨강색|노랑색|파랑색
+```
 
-option_prices
+#### `option_prices`
 
-형식:
-
+```text
 옵션:추가금액|옵션:추가금액
+```
 
 예:
 
+```text
 50RPM:0|100RPM:1100|300RPM:2200
+```
 
-🚀 로컬 설치 및 실행
+최종 단가:
 
-1. 저장소 Clone
+```text
+기본 판매가 + 옵션 추가금액
+```
 
+---
+
+## 🛒 장바구니 규칙
+
+### 동일 상품 + 동일 옵션
+
+수량을 누적합니다.
+
+```text
+E-14 / 빨강색 × 2
++
+E-14 / 빨강색 × 3
+=
+E-14 / 빨강색 × 5
+```
+
+### 동일 상품 + 다른 옵션
+
+별도 주문 항목으로 처리합니다.
+
+```text
+E-14 / 빨강색 × 2
+E-14 / 파랑색 × 3
+```
+
+### 지원 기능
+
+- 수량 직접 수정
+- 개별 삭제
+- 전체 삭제
+- 상품별 금액 자동 계산
+- 총 구매 예상금액 자동 계산
+
+---
+
+## 📄 학생용 구매 명세서
+
+### CSV 다운로드
+
+학교 기안문형 품목내역으로 생성합니다.
+
+```text
+<품목내역>
+
+학년,1학년
+반,3반
+번호,15번
+학생명/팀원명,홍길동
+
+순번,내용,규격,수량,단위,예상단가,예상금액
+1-1,아두이노 우노 R3,A-1,1,개,2900,2900
+1-2,아두이노 5파이 LED,빨강색,3,개,110,330
+```
+
+파일명 예:
+
+```text
+Eduino_품목내역_1학년_3반_15번_홍길동.csv
+```
+
+UTF-8 BOM 형식으로 생성하여 Excel 한글 호환성을 확보합니다.
+
+### Excel 다운로드
+
+학생별 Excel에는 다음 정보가 포함됩니다.
+
+- 학생 기본정보
+- 주문 품목
+- 규격
+- 수량
+- 단가
+- 금액
+- 합계
+
+행정문서 형태로 활용할 수 있도록 제목 병합, 헤더 강조, 정렬, 테두리, 열 너비, 줄바꿈, 천 단위 금액 포맷을 적용합니다.
+
+---
+
+## 🗂 Google Sheets 저장 구조
+
+### 저장 위치
+
+```text
+Drive
+└─ Streamlit
+   └─ Eduino 학생제출
+```
+
+### 시트
+
+```text
+학생제출
+```
+
+### 컬럼
+
+| 컬럼 | 설명 |
+|---|---|
+| 제출ID | 학생 식별용 제출 ID |
+| 제출일시 | 제출 시간 |
+| 학년 | 학생 학년 |
+| 반 | 학생 반 |
+| 번호 | 학생 번호 |
+| 학생명 | 학생/팀원명 |
+| 상품코드 | Eduino 코드 |
+| 상품명 | 상품명 |
+| 옵션 | 선택 옵션 |
+| 단가 | 실제 단가 |
+| 수량 | 주문 수량 |
+| 금액 | 단가 × 수량 |
+| 총액 | 학생 전체 주문 총액 |
+
+> 한 번의 제출에 여러 상품이 포함되면 **동일한 제출ID와 제출일시로 여러 행**이 저장됩니다.
+
+---
+
+## 🕒 최신 제출 처리
+
+### 재제출 정책
+
+학생이 같은 정보로 여러 번 제출해도 Google Sheets의 과거 기록은 삭제하지 않습니다.
+
+```text
+1학년 1반 1번
+22:55 제출 → 이전 제출
+
+1학년 1반 1번
+23:08 제출 → 최신 제출
+```
+
+### 현재 주문 판별
+
+교사용 화면에서는 다음 조합으로 최신 제출을 선택합니다.
+
+```text
+submission_id
++
+가장 최근 submitted_at
+```
+
+이때 최신 행 하나만 선택하는 것이 아니라, 같은 제출시각을 가진 **전체 상품 행을 하나의 제출 묶음으로 유지**합니다.
+
+---
+
+## 📦 전체 주문 통합
+
+### 집계 기준
+
+교사용 페이지에서는 최신 제출만 기준으로 전체 주문을 집계합니다.
+
+```text
+상품코드 + 옵션
+```
+
+예:
+
+```text
+E-14 / 빨강색
+E-14 / 파랑색
+```
+
+은 서로 다른 주문 품목입니다.
+
+### 표시 항목
+
+- 상품코드
+- 상품명
+- 옵션
+- 예상단가
+- 총수량
+- 예상금액
+
+---
+
+## 📥 교사용 전체 주문 Excel
+
+### 파일 예
+
+```text
+Eduino_전체주문내역_2026-08-14.xlsx
+```
+
+### `전체주문` 시트
+
+```text
+순번
+상품코드
+상품명
+옵션
+총수량
+단위
+예상단가
+예상금액
+```
+
+### `학생별제출` 시트
+
+```text
+학년
+반
+번호
+학생명
+제출일시
+상품코드
+상품명
+옵션
+수량
+단가
+금액
+```
+
+정렬 우선순위:
+
+```text
+1순위: 학년
+2순위: 반
+3순위: 번호
+```
+
+---
+
+## 🔗 Google Apps Script 연동
+
+### API 구조
+
+Streamlit에서 Google Sheets를 직접 조작하지 않고 Apps Script Web App을 API 계층으로 사용합니다.
+
+```mermaid
+flowchart LR
+    S[Streamlit] -->|POST| A[Apps Script]
+    S -->|GET| A
+    A --> G[(Google Sheets)]
+```
+
+### 주요 함수
+
+```text
+doPost(e)
+→ 학생 주문 저장
+
+doGet(e)
+→ 조회 요청 분기
+
+getSubmissions()
+→ 학생 제출 데이터 반환
+
+getSummary()
+→ 상품별 집계 반환
+```
+
+---
+
+## 🔐 인증 및 보안
+
+### Google 로그인
+
+학생은 로그인 없이 앱을 사용할 수 있습니다.
+
+교사용 주문관리만 Google 인증을 요구합니다.
+
+```python
+st.login()
+st.user
+st.logout()
+```
+
+### 교사 권한 판별
+
+```text
+Google 로그인
+↓
+사용자 이메일 확인
+↓
+teacher_emails allowlist 비교
+↓
+허용된 경우 교사용 페이지 표시
+```
+
+### Streamlit Secrets
+
+```toml
+[google_sheet]
+web_app_url = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"
+
+[auth]
+redirect_uri = "https://YOUR_APP.streamlit.app/oauth2callback"
+cookie_secret = "YOUR_RANDOM_COOKIE_SECRET"
+client_id = "YOUR_GOOGLE_CLIENT_ID"
+client_secret = "YOUR_GOOGLE_CLIENT_SECRET"
+server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration"
+
+teacher_emails = [
+    "YOUR_TEACHER_EMAIL"
+]
+```
+
+### GitHub에 업로드하지 않는 값
+
+- OAuth Client Secret
+- `cookie_secret`
+- Apps Script Web App URL
+- 실제 교사 이메일 목록
+- `.streamlit/secrets.toml`
+
+---
+
+## 🚀 설치 및 실행
+
+### 로컬 실행
+
+<details>
+<summary><strong>설치 및 실행 방법 보기</strong></summary>
+
+#### 1. 저장소 Clone
+
+```bash
 git clone YOUR_REPOSITORY_URL
 cd eduino-buy
+```
 
-2. 의존성 설치
+#### 2. 의존성 설치
 
+```bash
 pip install -r requirements.txt
+```
 
-3. Streamlit Secrets 설정
+#### 3. Secrets 설정
 
-로컬 개발 시:
+`.streamlit/secrets.toml`
 
-.streamlit/secrets.toml
-
-파일을 생성합니다.
-
-예:
-
+```toml
 [google_sheet]
 web_app_url = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"
 
@@ -861,211 +685,250 @@ server_metadata_url = "https://accounts.google.com/.well-known/openid-configurat
 teacher_emails = [
     "YOUR_TEACHER_EMAIL"
 ]
+```
 
-로컬 인증을 사용할 경우 Google OAuth Client에도 동일한 Redirect URI 등록이 필요합니다.
+#### 4. 실행
 
-4. 애플리케이션 실행
-
+```bash
 streamlit run streamlit_app.py
+```
 
 기본 주소:
 
+```text
 http://localhost:8501
+```
 
-☁️ Streamlit Community Cloud 배포
+</details>
 
-GitHub Repository를 Streamlit Community Cloud와 연결합니다.
+### Streamlit Community Cloud 배포
 
-Main file:
+<details>
+<summary><strong>배포 설정 보기</strong></summary>
 
+#### Main file
+
+```text
 streamlit_app.py
+```
 
-배포 후 앱 URL 예:
+#### 배포 URL 예
 
+```text
 https://eduino-buy.streamlit.app
+```
 
-Google OAuth Authorized Redirect URI:
+#### Google OAuth Redirect URI
 
+```text
 https://eduino-buy.streamlit.app/oauth2callback
+```
 
-Streamlit Community Cloud Secrets에는 실제 운영용 Secret 값을 등록해야 합니다.
+Streamlit Community Cloud의 **Secrets** 메뉴에 운영용 Secret 값을 입력합니다.
 
-🔄 상품 데이터 캐시
+#### Apps Script 수정 후
 
-상품 데이터는 @st.cache_data를 사용합니다.
-
-CSV 파일 수정 시 파일의 mtime 값을 캐시 키에 포함하여 변경사항이 자동으로 반영되도록 구현되어 있습니다.
-
-따라서 단순 브라우저 캐시가 아니라 실제 products.csv 변경 여부를 기준으로 Streamlit 데이터 캐시가 갱신됩니다.
-
-✅ 주요 검증 항목
-
-현재 다음 기능을 테스트했습니다.
-
-학생 기능
-
-✅ 학생 기본정보 입력
-
-✅ 상품 카테고리 표시
-
-✅ 상품 URL 연결
-
-✅ 옵션 선택
-
-✅ 옵션별 추가금액
-
-✅ 수량 선택
-
-✅ 상품 담기
-
-✅ 동일 상품 수량 누적
-
-✅ 옵션별 장바구니 분리
-
-✅ 장바구니 수량 직접 수정
-
-✅ 개별 상품 삭제
-
-✅ 장바구니 전체 삭제
-
-✅ 주문 요약
-
-✅ 총 구매 금액 계산
-
-✅ CSV 다운로드
-
-✅ Excel 다운로드
-
-✅ Google Sheets 최종 제출
-
-Google Sheets
-
-✅ Apps Script POST 요청
-
-✅ 학생 제출 저장
-
-✅ 상품 1개당 1행 저장
-
-✅ 제출일시 기록
-
-✅ 주문 총액 저장
-
-✅ Apps Script GET 조회
-
-교사용 기능
-
-✅ Google 로그인
-
-✅ 교사 이메일 allowlist
-
-✅ 교사용 메뉴 동적 표시
-
-✅ URL 직접 접근 제한
-
-✅ 학생 제출 현황
-
-✅ 최신 제출 우선 처리
-
-✅ 학생별 주문 상세
-
-✅ 전체 주문 통합
-
-✅ 상품 + 옵션별 집계
-
-✅ 교사용 전체 주문 Excel 다운로드
-
-✅ 로그아웃
-
-🔐 보안 원칙
-
-이 프로젝트에서는 다음 원칙을 사용합니다.
-
-학생은 Google 로그인 없이 구매 및 제출 가능
-
-교사용 주문관리만 Google 로그인 필요
-
-교사 이메일은 allowlist 방식으로 관리
-
-OAuth Secret은 Streamlit Secrets에 저장
-
-.streamlit/secrets.toml은 GitHub에 업로드하지 않음
-
-Google Sheets는 Streamlit에서 직접 접근하지 않고 Apps Script를 통해 접근
-
-⚠️ 현재 보안 구조 참고
-
-현재 Apps Script Web App은 학생 제출과 교사용 조회 API를 제공합니다.
-
-교사용 Streamlit 페이지는 인증된 교사만 조회 API를 호출하도록 제한되어 있습니다.
-
-다만 Apps Script Web App URL 자체에 대한 추가적인 서버 간 인증은 현재 구현되어 있지 않습니다.
-
-실제 대규모 서비스 또는 민감정보를 다루는 환경에서는 API 인증 강화가 추가로 필요할 수 있습니다.
-
-🎯 향후 개선 계획
-
-교사용 제출 이력 조회
-
-학생별 이전 제출 비교
-
-제출 취소 / 수정 정책
-
-교사용 상품 관리 기능
-
-상품 가격 일괄 업데이트
-
-주문 마감 기능
-
-학급별 제출률 표시
-
-미제출 학생 확인
-
-프로젝트별 주문 구분
-
-학년도 / 학기 구분
-
-모바일 UI 추가 개선
-
-Apps Script 조회 API 인증 강화
-
-💡 사용 팁
-
-상품 추가 또는 수정
-
-data/products.csv를 수정합니다.
-
-옵션 추가
-
-options 컬럼:
-
-옵션1|옵션2|옵션3
-
-옵션별 가격 추가
-
-option_prices 컬럼:
-
-옵션1:0|옵션2:1000|옵션3:2000
-
-학생 재제출
-
-학생이 같은 학년 / 반 / 번호로 다시 제출하더라도 Google Sheets에는 이전 제출이 삭제되지 않습니다.
-
-교사용 화면에서는 자동으로 최신 제출만 현재 주문으로 처리합니다.
-
-Apps Script 수정
-
-Apps Script 코드를 수정한 경우 기존 Web App 배포를 새 버전으로 업데이트해야 합니다.
-
+```text
 Apps Script
 → 배포
 → 배포 관리
-→ 기존 웹 앱 편집
+→ 기존 Web App 편집
 → 새 버전
 → 배포
+```
 
-기존 /exec URL을 유지하면 Streamlit Secrets를 다시 변경할 필요가 없습니다.
+기존 `/exec` URL을 유지하면 Streamlit Secrets를 다시 변경하지 않아도 됩니다.
 
-📞 문의 및 피드백
+</details>
+
+---
+
+## 🧠 주요 파일 역할
+
+### `streamlit_app.py`
+
+- 앱 Entry Point
+- Session State 관리
+- 상품 데이터 로딩
+- 상품 UI
+- 장바구니
+- 주문 요약
+- CSV / Excel 다운로드
+- 최종 제출
+- 인증 Sidebar
+- `st.Page`
+- `st.navigation`
+
+### `views/student_page.py`
+
+학생용 구매 페이지를 navigation에 연결합니다.
+
+### `pages/1_교사용_주문관리.py`
+
+- 교사 권한 검사
+- 학생 제출 조회
+- 최신 제출 추출
+- 학년 / 반 / 학생명 필터
+- 학생별 상세
+- 전체 주문 통합
+- 교사용 Excel
+
+### `services/auth_service.py`
+
+- Google 로그인 상태
+- 교사 allowlist
+- 교사 권한 판별
+- 인증 Sidebar
+- 로그아웃
+
+### `services/google_sheet_service.py`
+
+- `submit_order_to_sheet()`
+- `fetch_submissions()`
+- `fetch_order_summary()`
+
+### `services/excel_service.py`
+
+- 학생용 Excel
+- 교사용 통합 Excel
+- 행정문서형 스타일
+
+### `utils/calculator.py`
+
+- 계산 보조
+- `format_currency()`
+
+### `data/products.csv`
+
+Eduino 상품 데이터
+
+---
+
+## 🔄 상품 데이터 캐시
+
+상품 데이터는 `@st.cache_data`로 캐싱합니다.
+
+CSV 파일의 수정시간(`mtime`)을 캐시 키에 포함하기 때문에 `products.csv`가 변경되면 데이터 캐시도 자동으로 갱신됩니다.
+
+---
+
+## ✅ 검증 완료 기능
+
+### 학생 기능
+
+- [x] 학생 기본정보 입력
+- [x] 카테고리별 상품 표시
+- [x] 상품 URL 연결
+- [x] 옵션 선택
+- [x] 옵션별 추가금액
+- [x] 수량 선택
+- [x] 상품 담기
+- [x] 동일 상품 수량 누적
+- [x] 옵션별 장바구니 분리
+- [x] 장바구니 수량 수정
+- [x] 개별 삭제
+- [x] 전체 삭제
+- [x] 주문 요약
+- [x] CSV 다운로드
+- [x] Excel 다운로드
+- [x] Google Sheets 최종 제출
+
+### Google Sheets / Apps Script
+
+- [x] Apps Script POST 요청
+- [x] 학생 제출 저장
+- [x] 상품 1개당 1행 저장
+- [x] 제출일시 기록
+- [x] 주문 총액 저장
+- [x] Apps Script GET 조회
+
+### 교사용 기능
+
+- [x] Google 로그인
+- [x] 교사 이메일 allowlist
+- [x] 교사용 메뉴 동적 표시
+- [x] 직접 URL 접근 제한
+- [x] 학생 제출 현황
+- [x] 최신 제출 우선 처리
+- [x] 학생별 주문 상세
+- [x] 전체 주문 통합
+- [x] 상품 + 옵션별 집계
+- [x] 교사용 전체 주문 Excel 다운로드
+- [x] 로그아웃
+
+---
+
+## 🔒 보안 원칙
+
+### 적용 원칙
+
+1. 학생은 로그인 없이 이용
+2. 교사용 주문관리만 Google 로그인 필요
+3. 교사 이메일은 allowlist 방식으로 관리
+4. Secret은 Streamlit Secrets에서 관리
+5. `.streamlit/secrets.toml`은 GitHub에 업로드하지 않음
+6. Google Sheets 직접 접근 대신 Apps Script 사용
+7. 교사 권한 검사 전에 주문 데이터 조회 금지
+
+### 현재 구조 참고
+
+> 현재 Apps Script Web App URL 자체에는 별도의 서버 간 인증이 추가되어 있지 않습니다.  
+> 실제 민감정보를 다루는 대규모 서비스에서는 추가적인 API 인증 강화가 필요할 수 있습니다.
+
+---
+
+## 🎯 향후 개선 계획
+
+### 교사용 기능
+
+- [ ] 제출 이력 조회
+- [ ] 학생별 이전 제출 비교
+- [ ] 주문 마감 기능
+- [ ] 제출 취소 / 수정 정책
+- [ ] 학급별 제출률
+- [ ] 미제출 학생 확인
+
+### 데이터 관리
+
+- [ ] 학년도 / 학기 구분
+- [ ] 프로젝트별 주문 구분
+- [ ] 교사용 상품 관리
+- [ ] 상품 가격 일괄 업데이트
+
+### 시스템
+
+- [ ] 모바일 UI 추가 개선
+- [ ] Apps Script 조회 API 인증 강화
+
+---
+
+## 💡 사용 팁
+
+### 상품 추가 / 수정
+
+`data/products.csv` 파일을 수정합니다.
+
+### 옵션 추가
+
+```text
+옵션1|옵션2|옵션3
+```
+
+### 옵션별 추가금액
+
+```text
+옵션1:0|옵션2:1000|옵션3:2000
+```
+
+### 학생 재제출
+
+학생이 동일한 학년 / 반 / 번호로 다시 제출해도 Google Sheets에는 이전 기록이 유지됩니다.
+
+교사용 주문관리에서는 자동으로 **가장 최근 제출 전체**를 현재 주문으로 사용합니다.
+
+---
+
+## 📞 문의 및 피드백
 
 본 애플리케이션은 학교 수업에서 아두이노 프로젝트 부품 구매 및 주문 관리를 지원하기 위해 개발되었습니다.
 
