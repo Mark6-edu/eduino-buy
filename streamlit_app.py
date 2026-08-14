@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import io
 import csv
+import time
 from utils.calculator import format_currency
 
 # ============================================================================
@@ -203,11 +204,47 @@ def init_session_state():
         "cart": {},
         "selected_sensor_category": "환경",
         "selected_parts_category": "IC/기본소자",
+        "top_notification_message": "",
+        "top_notification_pending": False,
     }
 
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value.copy() if isinstance(value, dict) else value
+
+
+
+# ============================================================================
+# 상단 알림
+# ============================================================================
+
+
+def set_top_notification(message):
+    """다음 rerun에서 화면 상단에 표시할 1회성 알림을 저장한다."""
+    st.session_state["top_notification_message"] = str(message)
+    st.session_state["top_notification_pending"] = True
+
+
+def render_top_notification(placeholder):
+    """
+    장바구니 담기 직후 상단 알림을 표시하고 약 3초 뒤 제거한다.
+
+    Streamlit 기본 toast는 우측 하단에 표시되므로,
+    사용자 요청대로 화면 상단 알림을 위해 st.empty() placeholder를 사용한다.
+    """
+    if not st.session_state.get("top_notification_pending", False):
+        return
+
+    message = st.session_state.get("top_notification_message", "장바구니에 담았습니다.")
+
+    placeholder.success(f"🛒 {message}", icon="✅")
+
+    # 같은 알림이 다음 rerun에서 다시 뜨지 않도록 먼저 소비 처리
+    st.session_state["top_notification_pending"] = False
+
+    # 약 3초간 보여준 뒤 제거
+    time.sleep(3)
+    placeholder.empty()
 
 
 # ============================================================================
@@ -410,8 +447,8 @@ def render_product_row(row, key_prefix="product"):
 
             option_text = f" / {selected_option}" if selected_option else ""
 
-            st.toast(
-                f"{row['name']}{option_text} {int(quantity)}개를 담았습니다."
+            set_top_notification(
+                f"{row['name']}{option_text} {int(quantity)}개를 장바구니에 담았습니다."
             )
             st.rerun()
 
@@ -688,9 +725,23 @@ def sanitize_filename(value):
 
 def build_order_csv_bytes():
     """
-    학생 기본정보는 상단에 한 번만,
-    구매 상품은 아래 표 형태로,
-    총 구매 예상금액은 마지막에 한 번만 기록한다.
+    기안문 품목내역 형식으로 CSV를 생성한다.
+
+    상단:
+    - 학년 / 반 / 번호 / 학생명(팀원명)
+
+    품목내역:
+    - 순번
+    - 내용
+    - 규격
+    - 수량
+    - 단위
+    - 예상단가
+    - 예상금액
+
+    규격:
+    - 옵션이 있으면 옵션값
+    - 옵션이 없으면 상품코드
     """
     totals = calculate_cart_totals()
 
@@ -702,41 +753,64 @@ def build_order_csv_bytes():
     output = io.StringIO()
     writer = csv.writer(output, lineterminator="\n")
 
-    # 제목
-    writer.writerow(["Eduino 구매 명세서"])
+    writer.writerow(["<품목내역>"])
     writer.writerow([])
 
-    # 학생 기본정보: 각각 한 번만 기록
     writer.writerow(["학년", grade])
     writer.writerow(["반", class_name])
     writer.writerow(["번호", f"{student_number}번"])
     writer.writerow(["학생명/팀원명", student_name])
     writer.writerow([])
 
-    # 구매 상품 표
-    writer.writerow(["상품코드", "상품명", "옵션", "단가", "수량", "금액"])
+    writer.writerow(
+        [
+            "순번",
+            "내용",
+            "규격",
+            "수량",
+            "단위",
+            "예상단가",
+            "예상금액",
+        ]
+    )
 
-    for item in totals["selected_items"]:
+    for index, item in enumerate(totals["selected_items"], start=1):
+        option = str(item.get("옵션", "")).strip()
+
+        if not option or option == "-":
+            specification = item["상품코드"]
+        else:
+            specification = option
+
         writer.writerow(
             [
-                item["상품코드"],
+                f"1-{index}",
                 item["상품명"],
-                item["옵션"],
-                item["단가"],
+                specification,
                 item["수량"],
+                "개",
+                item["단가"],
                 item["금액"],
             ]
         )
 
-    # 총액: 마지막에 한 번만 기록
     writer.writerow([])
-    writer.writerow(["총 구매 예상금액", totals["total_amount"]])
+    writer.writerow(
+        [
+            "",
+            "합계",
+            "",
+            "",
+            "",
+            "",
+            totals["total_amount"],
+        ]
+    )
 
-    # Excel에서 한글이 깨지지 않도록 UTF-8 BOM 적용
     csv_bytes = output.getvalue().encode("utf-8-sig")
 
     filename = (
-        "Eduino_구매명세서_"
+        "Eduino_품목내역_"
         f"{sanitize_filename(grade)}_"
         f"{sanitize_filename(class_name)}_"
         f"{student_number}번_"
@@ -745,16 +819,15 @@ def build_order_csv_bytes():
 
     return csv_bytes, filename
 
-
 def render_csv_download():
     """현재 장바구니를 학생별 CSV 구매 명세서로 다운로드한다."""
     st.markdown("---")
-    st.subheader("⬇️ 구매 명세서 CSV 다운로드")
+    st.subheader("⬇️ 품목내역 CSV 다운로드")
 
     totals = calculate_cart_totals()
 
     if totals["selected_count"] == 0:
-        st.info("담긴 상품이 있어야 CSV 구매 명세서를 다운로드할 수 있습니다.")
+        st.info("담긴 상품이 있어야 품목내역 CSV를 다운로드할 수 있습니다.")
         return
 
     student_name = st.session_state.get("input_student_name", "").strip()
@@ -768,7 +841,7 @@ def render_csv_download():
     csv_bytes, filename = build_order_csv_bytes()
 
     st.download_button(
-        label="📥 CSV 구매 명세서 다운로드",
+        label="📥 품목내역 CSV 다운로드",
         data=csv_bytes,
         file_name=filename,
         mime="text/csv",
@@ -777,8 +850,8 @@ def render_csv_download():
     )
 
     st.caption(
-        "CSV에는 학생 기본정보가 상단에 한 번만 기록되고, "
-        "그 아래에 상품 목록과 최종 총 구매 예상금액이 표시됩니다."
+        "CSV는 기안문 품목내역 형식으로 생성됩니다. "
+        "열 구성: 순번 · 내용 · 규격 · 수량 · 단위 · 예상단가 · 예상금액"
     )
 
 
@@ -857,6 +930,10 @@ def render_selected_summary():
 
 def main():
     st.title("🤖 Eduino 구매 체크 확인")
+
+    # 상단 알림 전용 위치
+    top_notification_placeholder = st.empty()
+
     st.markdown("---")
 
     init_session_state()
@@ -960,6 +1037,10 @@ def main():
     render_cart()
     render_selected_summary()
     render_csv_download()
+
+    # 모든 화면 렌더링이 끝난 뒤 상단 알림을 표시하므로
+    # 페이지 전체는 유지된 상태에서 알림만 약 3초간 보인다.
+    render_top_notification(top_notification_placeholder)
 
 
 if __name__ == "__main__":
