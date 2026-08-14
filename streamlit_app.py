@@ -4,7 +4,6 @@ from pathlib import Path
 import re
 import io
 import csv
-import time
 from utils.calculator import format_currency
 
 # ============================================================================
@@ -225,26 +224,90 @@ def set_top_notification(message):
     st.session_state["top_notification_pending"] = True
 
 
-def render_top_notification(placeholder):
+def render_top_notification():
     """
-    장바구니 담기 직후 상단 알림을 표시하고 약 3초 뒤 제거한다.
-
-    Streamlit 기본 toast는 우측 하단에 표시되므로,
-    사용자 요청대로 화면 상단 알림을 위해 st.empty() placeholder를 사용한다.
+    현재 스크롤 위치와 관계없이 브라우저 viewport 상단 중앙에
+    약 3초 동안 표시되는 고정형 팝업 알림을 렌더링한다.
     """
     if not st.session_state.get("top_notification_pending", False):
         return
 
-    message = st.session_state.get("top_notification_message", "장바구니에 담았습니다.")
+    message = st.session_state.get(
+        "top_notification_message",
+        "장바구니에 담았습니다.",
+    )
 
-    placeholder.success(f"🛒 {message}", icon="✅")
+    safe_message = (
+        str(message)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;")
+    )
 
-    # 같은 알림이 다음 rerun에서 다시 뜨지 않도록 먼저 소비 처리
+    st.markdown(
+        f"""
+        <style>
+        @keyframes eduinoCartPopupFade {{
+            0% {{
+                opacity: 0;
+                transform: translate(-50%, -12px) scale(0.98);
+            }}
+            10% {{
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1);
+            }}
+            82% {{
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1);
+            }}
+            100% {{
+                opacity: 0;
+                transform: translate(-50%, -8px) scale(0.98);
+                visibility: hidden;
+            }}
+        }}
+
+        .eduino-cart-popup {{
+            position: fixed;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999999;
+            width: min(760px, calc(100vw - 32px));
+            padding: 16px 24px;
+            border-radius: 999px;
+            background: #9bddec;
+            color: #111827;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.20);
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 800;
+            line-height: 1.35;
+            pointer-events: none;
+            animation: eduinoCartPopupFade 3s ease-in-out forwards;
+        }}
+
+        @media (max-width: 768px) {{
+            .eduino-cart-popup {{
+                top: 16px;
+                width: calc(100vw - 24px);
+                padding: 13px 18px;
+                border-radius: 18px;
+                font-size: 1rem;
+            }}
+        }}
+        </style>
+
+        <div class="eduino-cart-popup">
+            🛒 {safe_message}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     st.session_state["top_notification_pending"] = False
-
-    # 약 3초간 보여준 뒤 제거
-    time.sleep(3)
-    placeholder.empty()
 
 
 # ============================================================================
@@ -930,10 +993,6 @@ def render_selected_summary():
 
 def main():
     st.title("🤖 Eduino 구매 체크 확인")
-
-    # 상단 알림 전용 위치
-    top_notification_placeholder = st.empty()
-
     st.markdown("---")
 
     init_session_state()
@@ -1038,9 +1097,8 @@ def main():
     render_selected_summary()
     render_csv_download()
 
-    # 모든 화면 렌더링이 끝난 뒤 상단 알림을 표시하므로
-    # 페이지 전체는 유지된 상태에서 알림만 약 3초간 보인다.
-    render_top_notification(top_notification_placeholder)
+    # 현재 스크롤 위치와 관계없이 viewport 상단 중앙에 3초간 표시
+    render_top_notification()
 
 
 if __name__ == "__main__":
