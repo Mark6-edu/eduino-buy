@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, Iterable, List
 
+import pandas as pd
 import requests
 import streamlit as st
 
@@ -340,12 +341,17 @@ def fetch_order_summary():
 
 
 def get_latest_submissions(rows):
-    """동일 submission_id의 중복 제출을 제거하고 가장 최근 제출만 유지한다."""
+    """동일 submission_id의 최신 제출 그룹 전체를 유지한다.
+
+    중요한 규칙:
+    - submission_id당 가장 최근 submitted_at을 찾는다.
+    - 해당 시각의 모든 상품 행을 유지한다.
+    - 한 행만 남기면 안 된다.
+    """
     if not rows:
         return []
 
-    latest_by_submission = {}
-
+    normalized_rows = []
     for row in rows:
         if not isinstance(row, dict):
             continue
@@ -354,17 +360,44 @@ def get_latest_submissions(rows):
         if not submission_id:
             continue
 
-        submitted_at = _safe_string(row.get("submitted_at") or row.get("제출일시"), "")
-        if submitted_at:
-            current_key = (submission_id, submitted_at)
-            latest_by_submission.setdefault(submission_id, row)
-            if submitted_at > _safe_string(latest_by_submission[submission_id].get("submitted_at") or latest_by_submission[submission_id].get("제출일시"), ""):
-                latest_by_submission[submission_id] = row
-        else:
-            latest_by_submission.setdefault(submission_id, row)
+        submitted_at_raw = row.get("submitted_at") or row.get("제출일시")
+        submitted_at = pd.to_datetime(submitted_at_raw, errors="coerce")
+
+        normalized_rows.append({
+            "submission_id": submission_id,
+            "submitted_at": submitted_at,
+            "row": row,
+        })
+
+    if not normalized_rows:
+        return []
+
+    latest_by_submission = {}
+    for item in normalized_rows:
+        submission_id = item["submission_id"]
+        submitted_at = item["submitted_at"]
+        previous = latest_by_submission.get(submission_id)
+
+        if previous is None or pd.isna(previous) or (
+            not pd.isna(submitted_at) and previous is not None and not pd.isna(previous) and submitted_at > previous
+        ):
+            latest_by_submission[submission_id] = submitted_at
 
     result = []
-    for row in latest_by_submission.values():
+    for item in normalized_rows:
+        submission_id = item["submission_id"]
+        submitted_at = item["submitted_at"]
+        latest_time = latest_by_submission.get(submission_id)
+
+        if pd.isna(latest_time):
+            is_latest_group = pd.isna(submitted_at)
+        else:
+            is_latest_group = not pd.isna(submitted_at) and submitted_at == latest_time
+
+        if not is_latest_group:
+            continue
+
+        row = item["row"]
         cleaned = {
             "submission_id": _safe_string(row.get("submission_id") or row.get("제출ID"), ""),
             "submitted_at": _safe_string(row.get("submitted_at") or row.get("제출일시"), ""),
