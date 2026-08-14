@@ -117,9 +117,14 @@ def get_effective_price(row, selected_option=""):
 
 
 @st.cache_data
-def load_products():
-    """products.csv를 로드하고 필요한 컬럼을 정규화한다."""
-    data_path = Path(__file__).parent / "data/products.csv"
+def load_products(data_path_str, file_mtime_ns):
+    """
+    products.csv를 로드하고 필요한 컬럼을 정규화한다.
+
+    file_mtime_ns를 캐시 키에 포함시켜 CSV 파일 내용이 바뀌면
+    Streamlit 캐시가 자동으로 무효화되도록 한다.
+    """
+    data_path = Path(data_path_str)
 
     try:
         df = pd.read_csv(data_path)
@@ -723,10 +728,36 @@ def main():
 
     init_session_state()
 
-    products_df = load_products()
+    data_path = Path(__file__).parent / "data/products.csv"
+
+    if not data_path.exists():
+        st.error("❌ data/products.csv 파일을 찾을 수 없습니다.")
+        st.stop()
+
+    products_df = load_products(
+        str(data_path),
+        data_path.stat().st_mtime_ns,
+    )
 
     if products_df.empty:
         st.stop()
+
+    # 데이터 반영 진단: D-75가 최신 CSV로 읽혔는지 확인
+    d75_debug = products_df[products_df["code"] == "D-75"]
+    with st.expander("🔎 상품 데이터 반영 확인", expanded=False):
+        st.caption(f"현재 읽는 CSV: {data_path}")
+        st.caption(f"CSV 수정시각(ns): {data_path.stat().st_mtime_ns}")
+        if not d75_debug.empty:
+            debug_row = d75_debug.iloc[0]
+            st.write({
+                "code": debug_row["code"],
+                "name": debug_row["name"],
+                "option_name": debug_row["option_name"],
+                "options": debug_row["options"],
+                "option_prices": debug_row.get("option_prices", ""),
+            })
+        else:
+            st.warning("D-75 상품을 CSV에서 찾지 못했습니다.")
 
     # ------------------------------------------------------------------------
     # 학생/팀 정보
