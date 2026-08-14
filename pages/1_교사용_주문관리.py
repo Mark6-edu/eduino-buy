@@ -1,4 +1,5 @@
 import io
+import re
 from datetime import datetime
 
 import pandas as pd
@@ -49,6 +50,21 @@ def display_student_label(student):
     student_number = str(student.get("student_number", ""))
     student_name = str(student.get("student_name", ""))
     return f"{grade} {class_name} {student_number}번 · {student_name}".strip()
+
+
+def extract_numeric_sort_value(value):
+    if value is None:
+        return 0
+
+    if isinstance(value, (int, float)):
+        return int(value)
+
+    text = str(value).strip()
+    if not text:
+        return 0
+
+    match = re.search(r"\d+", text)
+    return int(match.group(0)) if match else 0
 
 
 @st.cache_data(ttl=30)
@@ -199,7 +215,17 @@ def _build_teacher_excel(latest_rows, summary_rows):
 
     student_sheet = workbook.create_sheet("학생별제출")
     student_sheet.append(["학년", "반", "번호", "학생명", "제출일시", "상품코드", "상품명", "옵션", "수량", "단가", "금액"])
-    for row in latest_rows:
+
+    sorted_rows = sorted(
+        latest_rows,
+        key=lambda row: (
+            extract_numeric_sort_value(row.get("grade") or row.get("학년")),
+            extract_numeric_sort_value(row.get("class_name") or row.get("반")),
+            extract_numeric_sort_value(row.get("student_number") or row.get("번호")),
+        ),
+    )
+
+    for row in sorted_rows:
         student_sheet.append([
             row.get("grade", ""),
             row.get("class_name", ""),

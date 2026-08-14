@@ -352,6 +352,15 @@ def remove_from_cart(cart_key):
     st.session_state.pop(f"cart_qty_{cart_key}", None)
 
 
+def clear_all_cart():
+    """현재 장바구니와 연결된 widget state를 한 번에 제거한다."""
+    cart = st.session_state.get("cart", {})
+    for cart_key in list(cart.keys()):
+        st.session_state.pop(f"cart_qty_{cart_key}", None)
+
+    st.session_state["cart"] = {}
+
+
 def calculate_cart_totals():
     """장바구니 기준으로 선택 상품, 총수량, 총액을 계산한다."""
     selected_items = []
@@ -674,9 +683,26 @@ def render_generic_category(products_df, category):
 
 def render_cart():
     st.markdown("---")
-    st.subheader("🧺 담은 상품")
 
-    if not st.session_state["cart"]:
+    cart_items = st.session_state.get("cart", {})
+    title_col, delete_col = st.columns([5, 1.4])
+
+    with title_col:
+        st.subheader("🧺 담은 상품")
+
+    with delete_col:
+        if cart_items:
+            if st.button(
+                "🗑️ 전체 삭제",
+                key="clear_all_cart",
+                use_container_width=True,
+                type="secondary",
+            ):
+                clear_all_cart()
+                set_top_notification("🗑️ 담은 상품을 모두 삭제했습니다.")
+                st.rerun()
+
+    if not cart_items:
         st.info("아직 담은 상품이 없습니다.")
         return
 
