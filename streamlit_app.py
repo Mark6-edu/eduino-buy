@@ -742,30 +742,13 @@ def main():
     if products_df.empty:
         st.stop()
 
-    # 데이터 반영 진단: D-75가 최신 CSV로 읽혔는지 확인
-    d75_debug = products_df[products_df["code"] == "D-75"]
-    with st.expander("🔎 상품 데이터 반영 확인", expanded=False):
-        st.caption(f"현재 읽는 CSV: {data_path}")
-        st.caption(f"CSV 수정시각(ns): {data_path.stat().st_mtime_ns}")
-        if not d75_debug.empty:
-            debug_row = d75_debug.iloc[0]
-            st.write({
-                "code": debug_row["code"],
-                "name": debug_row["name"],
-                "option_name": debug_row["option_name"],
-                "options": debug_row["options"],
-                "option_prices": debug_row.get("option_prices", ""),
-            })
-        else:
-            st.warning("D-75 상품을 CSV에서 찾지 못했습니다.")
-
     # ------------------------------------------------------------------------
     # 학생/팀 정보
     # ------------------------------------------------------------------------
 
     st.subheader("📝 학생/팀 기본정보")
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         st.selectbox(
@@ -782,13 +765,6 @@ def main():
         )
 
     with col3:
-        st.text_input(
-            "팀명",
-            placeholder="예: Arduino 팀",
-            key="input_team_name",
-        )
-
-    with col4:
         st.text_input(
             "학생명 / 팀원명",
             placeholder="예: 김철수, 이영희",
