@@ -1,0 +1,23 @@
+category,code,name,price,url
+보드,EDU-001,Arduino Uno Rev3,35000,https://eduino.kr/products/arduino-uno-rev3
+보드,EDU-002,Arduino Mega 2560,55000,https://eduino.kr/products/arduino-mega
+보드,EDU-003,Arduino Nano,15000,https://eduino.kr/products/arduino-nano
+센서,EDU-101,초음파 센서 (HC-SR04),8500,https://eduino.kr/products/hc-sr04
+센서,EDU-102,온습도 센서 (DHT22),12000,https://eduino.kr/products/dht22
+센서,EDU-103,가스 센서 (MQ-2),6500,https://eduino.kr/products/mq-2
+모터,EDU-201,DC 모터 (3-6V),5000,https://eduino.kr/products/dc-motor
+모터,EDU-202,서보 모터 (9g),7500,https://eduino.kr/products/servo-motor
+모터,EDU-203,스텝 모터 (28BYJ-48),8000,https://eduino.kr/products/stepper-motor
+출력장치,EDU-301,LED (빨강 5mm),500,https://eduino.kr/products/led-red
+출력장치,EDU-302,LCD1602 디스플레이,12000,https://eduino.kr/products/lcd1602
+출력장치,EDU-303,부저 (5V),2500,https://eduino.kr/products/buzzer
+통신,EDU-401,Bluetooth 모듈 (HC-05),18000,https://eduino.kr/products/hc-05
+통신,EDU-402,WiFi 모듈 (ESP8266),22000,https://eduino.kr/products/esp8266
+전자부품,EDU-501,저항 (220Ω),100,https://eduino.kr/products/resistor-220
+전자부품,EDU-502,커패시터 (10μF),500,https://eduino.kr/products/capacitor-10uf
+전자부품,EDU-503,트랜지스터 (2N2222),1500,https://eduino.kr/products/transistor-2n2222
+케이블,EDU-601,USB 케이블 (Type A-B),5000,https://eduino.kr/products/usb-cable
+케이블,EDU-602,남-남 점프선 (40p),3000,https://eduino.kr/products/jumper-wire-mm
+케이블,EDU-603,브레드보드 (400홀),4500,https://eduino.kr/products/breadboard
+기타,EDU-701,건전지 박스 (AA 4칸),2000,https://eduino.kr/products/battery-holder
+기타,EDU-702,USB 전원 모듈,6000,https://eduino.kr/products/usb-power

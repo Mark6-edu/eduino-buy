@@ -1,19 +1,184 @@
-# :earth_americas: GDP dashboard template
+# 🤖 Eduino 구매 체크 확인
 
-A simple Streamlit app showing the GDP of different countries in the world.
+학교 수업용 웹 애플리케이션 - 아두이노 프로젝트 부품 구매 확인 시스템
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gdp-dashboard-template.streamlit.app/)
+## 📋 프로젝트 개요
 
-### How to run it on your own machine
+이 애플리케이션은 학생 또는 프로젝트 팀이 아두이노 프로젝트에 필요한 부품을 공통 체크리스트에서 선택하고, 수량을 입력하면 **Eduino** 판매 가격을 기준으로 예상 구매 금액을 자동 계산하여 구매 명세서를 만들 수 있도록 합니다.
 
-1. Install the requirements
+**Eduino 공식 사이트:** https://eduino.kr/
 
-   ```
-   $ pip install -r requirements.txt
-   ```
+## 🛠 기술 스택
 
-2. Run the app
+- **Python 3.11+**
+- **Streamlit** - 웹 UI 프레임워크
+- **Pandas** - 데이터 처리
 
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+## 📂 프로젝트 구조
+
+```
+eduino-buy/
+├── streamlit_app.py          # 메인 애플리케이션
+├── requirements.txt          # 의존성 패키지
+├── README.md                 # 프로젝트 문서
+├── data/
+│   ├── products.csv          # 상품 정보 데이터 (샘플 포함)
+│   └── gdp_data.csv          # (이전 프로젝트 파일 - 무시)
+└── utils/
+    ├── calculator.py         # 계산 로직 (금액 계산, 합계 등)
+    └── export.py             # 내보내기 기능 (추후 구현)
+```
+
+## 🚀 설치 및 실행
+
+### 1. 의존성 설치
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. 애플리케이션 실행
+
+```bash
+streamlit run streamlit_app.py
+```
+
+브라우저에서 `http://localhost:8501` 주소로 자동 오픈됩니다.
+
+## 📝 주요 기능
+
+### 1. 학생/팀 기본정보 입력
+- 학년 선택 (1학년 ~ 3학년, 기타)
+- 반 선택 (1반 ~ 5반)
+- 팀명 입력
+- 학생명/팀원명 입력
+
+### 2. 구매 체크리스트
+- **카테고리별 상품 구분:**
+  - 보드 (Arduino Uno, Mega 등)
+  - 센서 (초음파, 온습도, 가스 등)
+  - 모터 (DC, 서보, 스텝 모터)
+  - 출력장치 (LED, LCD, 부저)
+  - 통신 (Bluetooth, WiFi)
+  - 전자부품 (저항, 커패시터, 트랜지스터)
+  - 케이블 (USB, 점프선, 브레드보드)
+  - 기타 (건전지 박스, USB 전원 등)
+
+- **각 상품별 정보:**
+  - 상품명 (Eduino 링크 연동)
+  - 상품 코드
+  - 단가 (원)
+  - 구매 수량 (선택 시에만 입력 가능)
+  - 상품별 금액 (자동 계산)
+
+### 3. 선택 상품 요약
+- 선택된 상품만 별도 테이블에 표시
+- 컬럼: 카테고리, 상품코드, 상품명, 단가, 수량, 금액
+- 선택된 상품이 없을 경우 안내 메시지 표시
+
+### 4. 총 구매 금액 요약
+- 선택 상품 종류 (다양한 상품 개수)
+- 전체 구매 수량 (모든 선택 상품의 합계 수량)
+- 총 구매 예상금액 (천 단위 쉼표 포함)
+
+## 📊 상품 정보 (products.csv)
+
+### CSV 필드 구조
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| category | string | 상품 카테고리 |
+| code | string | 상품 코드 (예: EDU-001) |
+| name | string | 상품명 |
+| price | numeric | 단가 (원) |
+| url | string | Eduino 상품 페이지 URL |
+
+### 샘플 데이터
+
+```csv
+category,code,name,price,url
+보드,EDU-001,Arduino Uno Rev3,35000,https://eduino.kr/products/arduino-uno-rev3
+센서,EDU-101,초음파 센서 (HC-SR04),8500,https://eduino.kr/products/hc-sr04
+...
+```
+
+**주의:** CSV 파일의 `price` 컬럼은 자동으로 숫자형으로 변환됩니다. 변환 실패 시 프로그램이 중단되지 않고 해당 상품은 0원으로 처리됩니다.
+
+## 🔧 개발 조건 및 제한사항
+
+### 구현된 기능
+✅ 공통 상품 체크리스트
+✅ 실시간 수량 선택 및 금액 계산
+✅ 선택 상품 요약 표시
+✅ 카테고리별 상품 구분
+✅ 학생/팀 정보 입력
+
+### 미구현 기능 (추후 개발)
+- 데이터베이스 저장
+- 로그인 기능
+- Eduino 사이트 크롤링
+- 외부 API 연동
+- PDF/Excel 다운로드
+- 명세서 제출
+
+## ✅ 검증 항목
+
+구현 후 다음 사항을 점검했습니다:
+
+1. ✅ Streamlit 앱이 오류 없이 실행됨
+2. ✅ 모든 상품의 checkbox key가 충돌하지 않음
+3. ✅ 수량 입력 widget key가 충돌하지 않음
+4. ✅ 상품 체크 시 수량 및 금액이 정상 반영됨
+5. ✅ 체크 해제 시 수량과 금액이 합계에서 제거됨
+6. ✅ 여러 상품을 동시에 선택해도 총액 계산이 정상임
+7. ✅ 선택 상품이 없는 경우에도 오류가 발생하지 않음
+8. ✅ CSV 파일 수정 후 상품 목록 변경이 정상 반영됨
+
+## 📁 주요 파일 설명
+
+### streamlit_app.py
+메인 애플리케이션 파일로, 다음을 포함합니다:
+- 페이지 설정 (`st.set_page_config`)
+- 상품 데이터 로드 함수 (`load_products`)
+- UI 구성 (학생정보, 체크리스트, 요약 표, 총액)
+- 세션 상태 관리 (체크박스, 수량 입력)
+
+### utils/calculator.py
+계산 로직을 담당하는 모듈:
+- `calculate_product_amount()` - 상품별 금액 계산
+- `calculate_totals()` - 전체 합계 계산
+- `format_currency()` - 천 단위 쉼표 포맷
+
+### utils/export.py
+내보내기 기능 (현재 MVP 단계이므로 추후 구현 예정)
+
+### data/products.csv
+상품 정보 데이터 파일 (카테고리별 샘플 데이터 포함)
+
+### requirements.txt
+Python 의존성 패키지 목록
+- streamlit >= 1.28.0
+- pandas >= 2.0.0
+
+## 💡 사용 팁
+
+1. **상품 추가/수정:** `data/products.csv` 파일을 직접 수정하면 앱 재실행 시 반영됩니다.
+2. **상품 URL:** URL이 없는 경우 상품명을 일반 텍스트로 표시합니다.
+3. **가격 변환:** 가격이 숫자로 변환되지 않으면 자동으로 0원으로 처리됩니다.
+4. **캐싱:** 데이터는 `@st.cache_data`로 캐싱되므로 CSV 수정 후 브라우저 캐시를 클리어하거나 Streamlit을 재실행해야 합니다.
+
+## 🎯 향후 개선 계획
+
+- [ ] 데이터베이스 연동 (사용자별 주문 저장)
+- [ ] 로그인 기능
+- [ ] PDF 명세서 생성
+- [ ] Excel 다운로드
+- [ ] 이메일 전송
+- [ ] 가격 변동 알림
+- [ ] 관리자 페이지 (상품 관리)
+- [ ] 모바일 반응형 UI
+
+## 📞 문의 및 피드백
+
+이 애플리케이션은 학교 수업용으로 개발되었습니다.
+개선 사항이나 버그 보고는 프로젝트 담당자에게 연락해주세요.
