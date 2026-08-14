@@ -261,10 +261,19 @@ def add_to_cart(row, quantity, option="", unit_price=None):
             "url": str(row.get("url", "")),
         }
 
+    # 중요:
+    # 장바구니 number_input은 자체 widget state를 유지하므로
+    # 상품을 다시 담아 수량이 누적되었을 때 widget state도 함께 갱신해야 한다.
+    cart_qty_key = f"cart_qty_{cart_key}"
+    st.session_state[cart_qty_key] = int(
+        st.session_state["cart"][cart_key]["quantity"]
+    )
+
 
 def remove_from_cart(cart_key):
-    """장바구니 항목을 삭제한다."""
+    """장바구니 항목과 연결된 수량 widget state를 함께 삭제한다."""
     st.session_state["cart"].pop(cart_key, None)
+    st.session_state.pop(f"cart_qty_{cart_key}", None)
 
 
 def calculate_cart_totals():
@@ -627,19 +636,30 @@ def render_cart():
             st.text(f"{format_currency(item['price'])}원")
 
         with col_qty:
+            cart_qty_key = f"cart_qty_{cart_key}"
+
+            # 처음 렌더링되는 장바구니 항목만 cart의 수량으로 widget state 초기화
+            if cart_qty_key not in st.session_state:
+                st.session_state[cart_qty_key] = max(
+                    1,
+                    int(item["quantity"]),
+                )
+
             quantity = st.number_input(
                 "장바구니 수량",
                 min_value=1,
-                value=max(1, int(item["quantity"])),
                 step=1,
-                key=f"cart_qty_{cart_key}",
+                key=cart_qty_key,
                 label_visibility="collapsed",
             )
 
+            # 사용자가 장바구니에서 직접 수량을 바꾸면 cart 데이터에도 즉시 반영
             st.session_state["cart"][cart_key]["quantity"] = int(quantity)
 
         with col_amount:
-            amount = int(item["price"]) * int(quantity)
+            amount = int(item["price"]) * int(
+                st.session_state["cart"][cart_key]["quantity"]
+            )
             st.text(f"{format_currency(amount)}원")
 
         with col_remove:
