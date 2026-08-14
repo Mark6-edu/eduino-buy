@@ -59,6 +59,63 @@ def parse_options(value):
     return [item.strip() for item in text.split("|") if item.strip()]
 
 
+def parse_option_price_map(value):
+    """
+    옵션별 추가금액 문자열을 dict로 변환한다.
+
+    CSV 예:
+    50RPM:0|100RPM:1100|300RPM:2200
+
+    반환:
+    {
+        "50RPM": 0,
+        "100RPM": 1100,
+        "300RPM": 2200,
+    }
+    """
+    if pd.isna(value):
+        return {}
+
+    text = str(value).strip()
+    if not text or text.lower() == "nan":
+        return {}
+
+    result = {}
+
+    for item in text.split("|"):
+        item = item.strip()
+        if not item or ":" not in item:
+            continue
+
+        option, adjustment = item.rsplit(":", 1)
+        option = option.strip()
+
+        try:
+            adjustment = int(str(adjustment).replace(",", "").strip())
+        except ValueError:
+            adjustment = 0
+
+        if option:
+            result[option] = adjustment
+
+    return result
+
+
+def get_effective_price(row, selected_option=""):
+    """
+    기본 판매가 + 선택 옵션 추가금액을 반환한다.
+
+    옵션 추가금액이 없으면 기존 판매가를 그대로 반환한다.
+    """
+    base_price = int(row["price"])
+    option_price_map = parse_option_price_map(row.get("option_prices", ""))
+
+    if not selected_option:
+        return base_price
+
+    return base_price + int(option_price_map.get(selected_option, 0))
+
+
 @st.cache_data
 def load_products():
     """products.csv를 로드하고 필요한 컬럼을 정규화한다."""
@@ -89,6 +146,11 @@ def load_products():
         if "options" not in df.columns:
             df["options"] = ""
 
+        # 옵션별 추가금액을 저장하는 선택 컬럼.
+        # 예: 50RPM:0|100RPM:1100|300RPM:2200
+        if "option_prices" not in df.columns:
+            df["option_prices"] = ""
+
         text_columns = [
             "category",
             "subcategories",
@@ -97,6 +159,7 @@ def load_products():
             "url",
             "option_name",
             "options",
+            "option_prices",
         ]
 
         for column in text_columns:
@@ -157,22 +220,33 @@ def make_cart_key(code, option=""):
     return f"{code}::{normalized_option}"
 
 
-def add_to_cart(row, quantity, option=""):
-    """상품을 장바구니에 추가한다. 같은 코드+옵션이면 수량을 누적한다."""
+def add_to_cart(row, quantity, option="", unit_price=None):
+    """
+    상품을 장바구니에 추가한다.
+    같은 코드+옵션이면 수량을 누적한다.
+
+    unit_price를 전달하면 옵션 추가금액까지 반영된 최종 단가를 저장한다.
+    """
     code = str(row["code"]).strip()
     quantity = max(1, int(quantity))
     option = str(option).strip() if option else ""
 
+    if unit_price is None:
+        unit_price = get_effective_price(row, option)
+
+    unit_price = int(unit_price)
     cart_key = make_cart_key(code, option)
 
     if cart_key in st.session_state["cart"]:
         st.session_state["cart"][cart_key]["quantity"] += quantity
+        # CSV 가격이 수정된 경우를 대비해 담을 때 최신 단가로 갱신
+        st.session_state["cart"][cart_key]["price"] = unit_price
     else:
         st.session_state["cart"][cart_key] = {
             "code": code,
             "name": str(row["name"]),
             "option": option,
-            "price": int(row["price"]),
+            "price": unit_price,
             "quantity": quantity,
             "category": str(row["category"]),
             "subcategories": str(row.get("subcategories", "")),
@@ -270,9 +344,7 @@ def render_product_row(row, key_prefix="product"):
     with col_code:
         st.text(code)
 
-    with col_price:
-        st.text(f"{format_currency(row['price'])}원")
-
+    # 먼저 옵션을 선택해야 실제 단가를 계산할 수 있다.
     with col_option:
         if option_values:
             selected_option = st.selectbox(
@@ -285,6 +357,12 @@ def render_product_row(row, key_prefix="product"):
             selected_option = ""
             st.text("-")
 
+    effective_price = get_effective_price(row, selected_option)
+
+    with col_price:
+        # 옵션 추가금액이 있는 상품은 선택 옵션에 따라 단가가 즉시 변경된다.
+        st.text(f"{format_currency(effective_price)}원")
+
     with col_qty:
         quantity = st.number_input(
             "수량",
@@ -296,7 +374,7 @@ def render_product_row(row, key_prefix="product"):
         )
 
     with col_amount:
-        preview_amount = int(row["price"]) * int(quantity)
+        preview_amount = int(effective_price) * int(quantity)
         st.text(f"{format_currency(preview_amount)}원")
 
     with col_add:
@@ -310,6 +388,7 @@ def render_product_row(row, key_prefix="product"):
                 row=row,
                 quantity=quantity,
                 option=selected_option,
+                unit_price=effective_price,
             )
 
             option_text = f" / {selected_option}" if selected_option else ""
@@ -689,6 +768,7 @@ def main():
     st.subheader("🛒 구매 체크리스트")
     st.caption(
         "필요한 상품의 옵션과 수량을 정한 뒤 **담기** 버튼을 눌러주세요. "
+        "옵션에 추가금액이 있는 상품은 선택한 옵션에 따라 단가와 금액이 자동으로 변경됩니다. "
         "같은 상품을 다시 담으면 동일한 옵션 기준으로 수량이 누적됩니다."
     )
 
