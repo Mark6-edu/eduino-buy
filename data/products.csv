@@ -3,6 +3,8 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 보드,,A-7,아두이노 나노 v3.0 328P 호환보드,2850,https://eduino.kr/product/detail.html?product_no=130&cate_no=134&display_group=1,,,
 보드,,B-10,아두이노 센서 확장 쉴드 V5.0,1800,https://eduino.kr/product/detail.html?product_no=115&cate_no=134&display_group=1,,,
 보드,,B-18,아두이노 나노 I/O 확장 프로토 쉴드,1800,https://eduino.kr/product/detail.html?product_no=174&cate_no=134&display_group=1,,,
+보드,,A-5,아두이노 우노+WIFI D1 R1 보드(ESP8266),6000,https://eduino.kr/product/detail.html?product_no=64&cate_no=134&display_group=1,,,
+보드,,B-29,아두이노 다기능 범용 확장 쉴드,4400,https://eduino.kr/product/detail.html?product_no=660&cate_no=134&display_group=1,,,
 
 센서,환경|수질/토양,C-5,아두이노 토양 수분감지 센서 모듈,1100,https://eduino.kr/product/detail.html?product_no=84&cate_no=34&display_group=1,,,
 센서,환경|수질/토양,C-6,아두이노 빗물감지 수위 측정 센서 모듈,440,https://eduino.kr/product/detail.html?product_no=106&cate_no=34&display_group=1,,,
@@ -59,6 +61,7 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 
 전자부품,IC/기본소자,E-14,아두이노 5파이(5mm) LED,110,https://eduino.kr/product/detail.html?product_no=202&cate_no=76&display_group=1,색상,빨강색|노랑색|파랑색|초록색|백색,
 전자부품,IC/기본소자,E-92,아두이노 12x12 택트 스위치,220,https://eduino.kr/product/detail.html?product_no=310&cate_no=76&display_group=1,,,
+전자부품,주변부품,E-93,아두이노 택트스위치 12x12용 원형 캡 (7가지 색상 선택),150,https://eduino.kr/product/detail.html?product_no=311&cate_no=76&display_group=1,색상,빨강|파랑|초록|노랑|흰색|회색|검정,
 전자부품,IC/기본소자,E-13,아두이노 RGB 3색 LED (4핀) 센서,330,https://eduino.kr/product/detail.html?product_no=286&cate_no=76&display_group=1,,,
 전자부품,IC/기본소자,E-36,아두이노 로터리형 15파이 가변저항 10K / 포텐셔미터,880,https://eduino.kr/product/detail.html?product_no=319&cate_no=76&display_group=1,,,
 
