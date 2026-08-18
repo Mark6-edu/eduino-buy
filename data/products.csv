@@ -61,7 +61,7 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 
 전자부품,IC/기본소자,E-14,아두이노 5파이(5mm) LED,110,https://eduino.kr/product/detail.html?product_no=202&cate_no=76&display_group=1,색상,빨강색|노랑색|파랑색|초록색|백색,
 전자부품,IC/기본소자,E-92,아두이노 12x12 택트 스위치,220,https://eduino.kr/product/detail.html?product_no=310&cate_no=76&display_group=1,,,
-전자부품,주변부품,E-93,아두이노 택트스위치 12x12용 원형 캡 (7가지 색상 선택),150,https://eduino.kr/product/detail.html?product_no=311&cate_no=76&display_group=1,색상,빨강|파랑|초록|노랑|흰색|회색|검정,
+전자부품,IC/기본소자,E-93,아두이노 택트스위치 12x12용 원형 캡 (7가지 색상 선택),150,https://eduino.kr/product/detail.html?product_no=311&cate_no=76&display_group=1,색상,빨강|파랑|초록|노랑|흰색|회색|검정,
 전자부품,IC/기본소자,E-13,아두이노 RGB 3색 LED (4핀) 센서,330,https://eduino.kr/product/detail.html?product_no=286&cate_no=76&display_group=1,,,
 전자부품,IC/기본소자,E-36,아두이노 로터리형 15파이 가변저항 10K / 포텐셔미터,880,https://eduino.kr/product/detail.html?product_no=319&cate_no=76&display_group=1,,,
 
@@ -81,3 +81,4 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 전자부품,케이블,E-44,아두이노 점퍼케이블 암-수 20cm 40핀,3000,https://eduino.kr/product/detail.html?product_no=49&cate_no=71&display_group=1,,,
 
 전자부품,배터리/전원,E-62,아두이노 보드 전원 공급용 9V 1A 아답터 / 어댑터,12500,https://eduino.kr/product/detail.html?product_no=262&cate_no=79&display_group=1,,,
+전자부품,배터리/전원,E-150,아두이노 1.5V AA 3칸 배터리 홀더 덮개 케이스형 (ph2.0 커넥터 부착형),5500,https://eduino.kr/product/detail.html?product_no=914&cate_no=1092&display_group=1,,,
