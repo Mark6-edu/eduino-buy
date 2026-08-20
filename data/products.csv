@@ -20,6 +20,7 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 센서,압력/접촉,C-84,아두이노 16키 디지털 터치 센서 TTP229 모듈,2500,https://eduino.kr/product/detail.html?product_no=303&cate_no=996&display_group=1,,,
 센서,압력/접촉,C-62,아두이노 충격센서 / 진동센서 모듈 SW-18010P,1100,https://eduino.kr/product/detail.html?product_no=289&cate_no=996&display_group=1,,,
 센서,압력/접촉,C-18,아두이노 멤브레인 1x4 키패드 센서,1100,https://eduino.kr/product/detail.html?product_no=1376&cate_no=1092&display_group=1,,,
+센서,압력/접촉,C-71,아두이노 틸트 기울기 센서 SW-520D 모듈,750,https://eduino.kr/product/detail.html?product_no=381&cate_no=60&display_group=1,,,
 
 센서,조도/적외선/컬러,C-54,아두이노 광 포토셀 CdS 조도센서 모듈,770,https://eduino.kr/product/detail.html?product_no=234&cate_no=992&display_group=1,,,
 센서,조도/적외선/컬러,C-52,아두이노 적외선 PIR 센서 인체감지 모션센서 HC-SR501,1200,https://eduino.kr/product/detail.html?product_no=104&cate_no=992&display_group=1,,,
@@ -51,7 +52,7 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 센서,LED/네오픽셀,D-102,아두이노 3색 RGB LED 신호등 모듈,770,https://eduino.kr/product/detail.html?product_no=613&cate_no=1092&display_group=1,,,
 센서,LED/네오픽셀,D-35,아두이노 8x8 도트 매트릭스 MAX7219 모듈,2800,https://eduino.kr/product/detail.html?product_no=367&cate_no=1092&display_group=1,,,
 센서,LED/네오픽셀,D-96,아두이노 네오픽셀 8비트 RGB LED 원형 WS2812,3300,https://eduino.kr/product/detail.html?product_no=607&cate_no=1092&display_group=1,,,
-센서,LED/네오픽셀,D-32,아두이노 32x8 도트 매트릭스 LED 5핀제어 MAX7219 모듈,가격확인필요,https://eduino.kr/product/detail.html?product_no=340&cate_no=1031&display_group=1,,,
+센서,LED/네오픽셀,D-32,아두이노 32x8 도트 매트릭스 LED 5핀제어 MAX7219 모듈,6600,https://eduino.kr/product/detail.html?product_no=340&cate_no=1031&display_group=1,,,
 센서,LED/네오픽셀,D-97,아두이노 네오픽셀 12비트 RGB LED 원형 WS2812,6600,https://eduino.kr/product/detail.html?product_no=608&cate_no=1092&display_group=1,,,
 센서,LED/네오픽셀,D-31,아두이노 시계형 7세그먼트 4칸 FND,1500,https://eduino.kr/product/detail.html?product_no=403&cate_no=1092&display_group=1,,,
 
