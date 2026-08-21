@@ -54,6 +54,7 @@ category,subcategories,code,name,price,url,option_name,options,option_prices
 센서,LED/네오픽셀,D-96,아두이노 네오픽셀 8비트 RGB LED 원형 WS2812,3300,https://eduino.kr/product/detail.html?product_no=607&cate_no=1092&display_group=1,,,
 센서,LED/네오픽셀,D-32,아두이노 32x8 도트 매트릭스 LED 5핀제어 MAX7219 모듈,6600,https://eduino.kr/product/detail.html?product_no=340&cate_no=1031&display_group=1,,,
 센서,LED/네오픽셀,D-97,아두이노 네오픽셀 12비트 RGB LED 원형 WS2812,6600,https://eduino.kr/product/detail.html?product_no=608&cate_no=1092&display_group=1,,,
+센서,LED/네오픽셀,C-93,(케이블형)아두이노 네오픽셀 원형패널 16비트 5V RGB LED WS2812,5500,https://eduino.kr/product/detail.html?product_no=9998&cate_no=1031&display_group=1,,,
 센서,LED/네오픽셀,D-31,아두이노 시계형 7세그먼트 4칸 FND,1500,https://eduino.kr/product/detail.html?product_no=403&cate_no=1092&display_group=1,,,
 
 센서,소리/영상,E-31,아두이노 수동 부저 / 피에조 부저,550,https://eduino.kr/product/detail.html?product_no=237&cate_no=62&display_group=1,,,
